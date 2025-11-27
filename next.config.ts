@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig = {
   output: "export",
-  basePath: "/eCapture",
+  basePath: "https://dridleys.github.io/eCapture/",
   images: { unoptimized: true },
 };
 
