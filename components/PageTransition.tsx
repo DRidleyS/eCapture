@@ -3,6 +3,15 @@
 import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 
+const getRouteColor = (route: string): string => {
+  if (route.includes("/real")) return "#60a5fa"; // blue
+  if (route.includes("/rentals")) return "#34d399"; // emerald
+  if (route.includes("/insurance")) return "#fbbf24"; // amber
+  if (route.includes("/ops")) return "#a78bfa"; // violet
+  if (route.includes("/aec")) return "#ef4444"; // red
+  return "#ff6b6b"; // default red
+};
+
 export default function PageTransition({
   children,
 }: {
@@ -12,6 +21,7 @@ export default function PageTransition({
   const router = useRouter();
   const [isTransitioning, setIsTransitioning] = React.useState(false);
   const [pendingRoute, setPendingRoute] = React.useState<string | null>(null);
+  const [routeColor, setRouteColor] = React.useState("#ff6b6b");
 
   React.useEffect(() => {
     const handleClick = (e: MouseEvent) => {
@@ -24,6 +34,7 @@ export default function PageTransition({
           e.preventDefault();
           setIsTransitioning(true);
           setPendingRoute(url.pathname);
+          setRouteColor(getRouteColor(url.pathname));
         }
       }
     };
@@ -170,15 +181,14 @@ export default function PageTransition({
                   50% { opacity: 1; }
                 }
                 @keyframes delayedDraw {
-                  0%, 50% { stroke-dashoffset: 280; opacity: 0; }
+                  0%, 50% { stroke-dashoffset: 290; opacity: 0; }
                   51% { opacity: 1; }
                   100% { stroke-dashoffset: 0; opacity: 1; }
                 }
                 .e-letter {
-                  stroke: #ff6b6b;
                   stroke-width: 6;
                   fill: none;
-                  stroke-dasharray: 280;
+                  stroke-dasharray: 290;
                   animation: delayedDraw 2s ease-out forwards, neonPulse 2s ease-in-out 1.5s infinite;
                   filter: url(#softGlow);
                   stroke-linecap: round;
@@ -187,8 +197,9 @@ export default function PageTransition({
               `}
               </style>
               <path
-                d="M 20 50 L 75 50 Q 80 30, 70 20 Q 60 10, 45 10 Q 30 10, 20 20 Q 10 30, 10 45 Q 10 60, 20 70 Q 30 80, 45 80 Q 60 80, 70 70 Q 76 62, 78 50"
+                d="M 20 50 L 75 50 Q 80 30, 70 20 Q 60 10, 45 10 Q 30 10, 20 20 Q 10 30, 10 45 Q 10 60, 20 70 Q 30 80, 45 80 Q 60 80, 70 70 Q 76 62, 78 50 Q 78 54, 79 58"
                 className="e-letter"
+                style={{ stroke: routeColor }}
               />
             </svg>
           </div>

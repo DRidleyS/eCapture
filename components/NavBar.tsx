@@ -6,10 +6,12 @@ const AnimatedLink = ({
   href,
   children,
   onClick,
+  hoverColor,
 }: {
   href: string;
   children: string;
   onClick?: () => void;
+  hoverColor?: string;
 }) => {
   const [isHovered, setIsHovered] = React.useState(false);
   const letters = children.split("");
@@ -17,11 +19,14 @@ const AnimatedLink = ({
   return (
     <a
       href={href}
-      className="text-white/80 hover:text-white transition-colors inline-flex overflow-hidden"
+      className="text-white/80 transition-colors inline-flex overflow-hidden"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={onClick}
-      style={{ height: "1.2em" }}
+      style={{
+        height: "1.2em",
+        color: isHovered && hoverColor ? hoverColor : undefined,
+      }}
     >
       {letters.map((letter, index) => (
         <span
@@ -42,6 +47,7 @@ const AnimatedLink = ({
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = React.useState(false);
+  const [logoHovered, setLogoHovered] = React.useState(false);
 
   return (
     <>
@@ -51,19 +57,42 @@ const NavBar = () => {
             <div className="flex items-center">
               <a
                 href="/"
-                className="text-xl font-bold text-white hover:text-blue-300 transition-colors"
+                className="text-xl font-bold text-white hover:text-blue-300 transition-all duration-300 inline-flex overflow-hidden"
+                onMouseEnter={() => setLogoHovered(true)}
+                onMouseLeave={() => setLogoHovered(false)}
+                style={{ height: "1.5em" }}
               >
-                eCapture
+                <div
+                  className="transition-transform duration-300"
+                  style={{
+                    transform: logoHovered
+                      ? "translateY(-100%)"
+                      : "translateY(0)",
+                  }}
+                >
+                  <div className="block">eCapture</div>
+                  <div className="block">Home</div>
+                </div>
               </a>
             </div>
 
             {/* Desktop Menu */}
             <div className="hidden md:flex items-center space-x-8">
-              <AnimatedLink href="/real">Real Estate</AnimatedLink>
-              <AnimatedLink href="/rentals">Rental Listings</AnimatedLink>
-              <AnimatedLink href="/insurance">Insurance Work</AnimatedLink>
-              <AnimatedLink href="/ops">ComOps</AnimatedLink>
-              <AnimatedLink href="/aec">AEC</AnimatedLink>
+              <AnimatedLink href="/real" hoverColor="#60a5fa">
+                Real Estate
+              </AnimatedLink>
+              <AnimatedLink href="/rentals" hoverColor="#34d399">
+                Rental Listings
+              </AnimatedLink>
+              <AnimatedLink href="/insurance" hoverColor="#fbbf24">
+                Insurance Work
+              </AnimatedLink>
+              <AnimatedLink href="/ops" hoverColor="#a78bfa">
+                ComOps
+              </AnimatedLink>
+              <AnimatedLink href="/aec" hoverColor="#ef4444">
+                AEC
+              </AnimatedLink>
             </div>
 
             {/* Mobile Menu Button */}
@@ -129,35 +158,35 @@ const NavBar = () => {
           <div className="flex flex-col items-center justify-center h-full space-y-8">
             <a
               href="/real"
-              className="text-2xl text-white hover:text-blue-300"
+              className="text-2xl text-white hover:text-blue-400 transition-colors"
               onClick={() => setIsOpen(false)}
             >
               Real Estate
             </a>
             <a
               href="/rentals"
-              className="text-2xl text-white hover:text-blue-300"
+              className="text-2xl text-white hover:text-emerald-400 transition-colors"
               onClick={() => setIsOpen(false)}
             >
               Rental Listings
             </a>
             <a
               href="/ops"
-              className="text-2xl text-white hover:text-blue-300"
+              className="text-2xl text-white hover:text-violet-400 transition-colors"
               onClick={() => setIsOpen(false)}
             >
               ComOps
             </a>
             <a
               href="/insurance"
-              className="text-2xl text-white hover:text-blue-300"
+              className="text-2xl text-white hover:text-amber-400 transition-colors"
               onClick={() => setIsOpen(false)}
             >
               Insurance Work
             </a>
             <a
               href="/aec"
-              className="text-2xl text-white hover:text-blue-300"
+              className="text-2xl text-white hover:text-red-500 transition-colors"
               onClick={() => setIsOpen(false)}
             >
               AEC
