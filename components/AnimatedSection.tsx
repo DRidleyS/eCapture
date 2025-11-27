@@ -14,9 +14,7 @@ const AnimatedSection = ({
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setTimeout(() => {
-            setIsVisible(true);
-          }, 1000);
+          setIsVisible(true);
         } else {
           setIsVisible(false);
         }

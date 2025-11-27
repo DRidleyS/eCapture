@@ -1,10 +1,14 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import AnimatedSection from "@/components/AnimatedSection";
 import TypewriterText from "@/components/TypewriterText";
+import ServiceCard from "@/components/ServiceCard";
+import ContactForm from "@/components/ContactForm";
 
 export default function Home() {
+  const [showContactForm, setShowContactForm] = useState(false);
+
   const useCases = [
     { text: "Real Estate", color: "#60a5fa" }, // blue-400
     { text: "Rental Properties", color: "#34d399" }, // emerald-400
@@ -72,12 +76,12 @@ export default function Home() {
                   <p className="text-white text-sm mb-3">
                     Ready to capture your space in stunning 3D?
                   </p>
-                  <a
-                    href="/contact"
+                  <button
+                    onClick={() => setShowContactForm(true)}
                     className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition"
                   >
                     Book Now
-                  </a>
+                  </button>
                 </div>
               </div>
             </div>
@@ -90,185 +94,149 @@ export default function Home() {
             Our Services
           </h2>
 
-          {/* Real Estate */}
-          <AnimatedSection className="mb-16">
-            <div className="bg-white/10 backdrop-blur-md rounded-xl shadow-lg p-8 mb-8">
-              <h3 className="text-2xl font-semibold text-white mb-4">
-                Real Estate
-              </h3>
-              <p className="text-white/80 text-lg mb-6">
-                <span className="text-blue-400">Sell homes faster</span> with
-                immersive 3D tours. Buyers can explore every room, get a feel
-                for the space, and schedule showings with confidence. Virtual
-                tours <span className="text-blue-400">increase engagement</span>{" "}
-                and help properties{" "}
-                <span className="text-blue-400">stand out</span> in the famously
-                competitive LA market.{" "}
-                <a href="/real" className="underline">
-                  Learn more.
-                </a>
-              </p>
-              <div
-                className="rounded-lg overflow-hidden"
-                style={{ height: "480px" }}
-              >
-                <iframe
-                  width="100%"
-                  height="100%"
-                  src="https://my.matterport.com/show/?m=8CzZPMoH7vp"
-                  frameBorder="0"
-                  allowFullScreen
-                  allow="xr-spatial-tracking"
-                ></iframe>
-              </div>
-            </div>
-          </AnimatedSection>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Real Estate */}
+            <AnimatedSection>
+              <ServiceCard
+                title="Real Estate"
+                color="#60a5fa"
+                modelId="8CzZPMoH7vp"
+                link="/real"
+                description={
+                  <p>
+                    <span className="text-blue-400">Sell homes faster</span>{" "}
+                    with immersive 3D tours. Buyers can explore every room, get
+                    a feel for the space, and schedule showings with confidence.
+                    Virtual tours{" "}
+                    <span className="text-blue-400">increase engagement</span>{" "}
+                    and help properties{" "}
+                    <span className="text-blue-400">stand out</span> in the
+                    famously competitive LA market.{" "}
+                    <a href="/real" className="underline">
+                      See more.
+                    </a>
+                  </p>
+                }
+              />
+            </AnimatedSection>
 
-          {/* Rentals */}
-          <AnimatedSection className="mb-16">
-            <div className="bg-white/10 backdrop-blur-md rounded-xl shadow-lg p-8 mb-8">
-              <h3 className="text-2xl font-semibold text-white mb-4">
-                Rental Properties
-              </h3>
-              <p className="text-white/80 text-lg mb-6">
-                <span className="text-emerald-400">
-                  Transform rental listings
-                </span>{" "}
-                with interactive 3D tours that blow static photos out of the
-                water.{" "}
-                <span className="text-emerald-400">
-                  Reduce unnecessary showings
-                </span>
-                , attract quality tenants, and let prospects explore properties
-                <span className="text-emerald-400"> 24/7 from anywhere</span>.
-                Perfect for landlords and property management companies in LA.{" "}
-                <a href="/rentals" className="underline">
-                  Learn More.
-                </a>
-              </p>
-              <div
-                className="rounded-lg overflow-hidden"
-                style={{ height: "480px" }}
-              >
-                <iframe
-                  width="100%"
-                  height="100%"
-                  src="https://my.matterport.com/show/?m=8CzZPMoH7vp"
-                  frameBorder="0"
-                  allowFullScreen
-                  allow="xr-spatial-tracking"
-                ></iframe>
-              </div>
-            </div>
-          </AnimatedSection>
+            {/* Rentals */}
+            <AnimatedSection>
+              <ServiceCard
+                title="Rental Properties"
+                color="#34d399"
+                modelId="8CzZPMoH7vp"
+                link="/rentals"
+                description={
+                  <p>
+                    <span className="text-emerald-400">
+                      Transform rental listings
+                    </span>{" "}
+                    with interactive 3D tours that blow static photos out of the
+                    water.{" "}
+                    <span className="text-emerald-400">
+                      Reduce unnecessary showings
+                    </span>
+                    , attract quality tenants, and let prospects explore
+                    properties
+                    <span className="text-emerald-400">
+                      {" "}
+                      24/7 from anywhere
+                    </span>
+                    . Perfect for landlords and property management companies in
+                    LA.{" "}
+                    <a href="/rentals" className="underline">
+                      See more.
+                    </a>
+                  </p>
+                }
+              />
+            </AnimatedSection>
 
-          {/* Insurance */}
-          <AnimatedSection className="mb-16">
-            <div className="bg-white/10 backdrop-blur-md rounded-xl shadow-lg p-8 mb-8">
-              <h3 className="text-2xl font-semibold text-white mb-4">
-                Insurance Documentation
-              </h3>
-              <p className="text-white/80 text-lg mb-6">
-                <span className="text-amber-400">
-                  Comprehensive property documentation
-                </span>{" "}
-                for claims and pre-loss records. Capture{" "}
-                <span className="text-amber-400">every detail</span> of a
-                property's condition with
-                <span className="text-amber-400"> timestamped 3D scans</span>.
-                Essential for insurance adjusters, homeowners, and property
-                managers protecting their investments.{" "}
-                <a href="/insurance" className="underline">
-                  Learn More.
-                </a>
-              </p>
-              <div
-                className="rounded-lg overflow-hidden"
-                style={{ height: "480px" }}
-              >
-                <iframe
-                  width="100%"
-                  height="100%"
-                  src="https://my.matterport.com/show/?m=8CzZPMoH7vp"
-                  frameBorder="0"
-                  allowFullScreen
-                  allow="xr-spatial-tracking"
-                ></iframe>
-              </div>
-            </div>
-          </AnimatedSection>
+            {/* Insurance */}
+            <AnimatedSection>
+              <ServiceCard
+                title="Insurance Documentation"
+                color="#fbbf24"
+                modelId="8CzZPMoH7vp"
+                link="/insurance"
+                description={
+                  <p>
+                    <span className="text-amber-400">
+                      Comprehensive property documentation
+                    </span>{" "}
+                    for claims and pre-loss records. Capture{" "}
+                    <span className="text-amber-400">every detail</span> of a
+                    property's condition with
+                    <span className="text-amber-400">
+                      {" "}
+                      timestamped 3D scans
+                    </span>
+                    . Essential for insurance adjusters, homeowners, and
+                    property managers protecting their investments.{" "}
+                    <a href="/insurance" className="underline">
+                      See more.
+                    </a>
+                  </p>
+                }
+              />
+            </AnimatedSection>
 
-          {/* AEC */}
-          <AnimatedSection className="mb-16">
-            <div className="bg-white/10 backdrop-blur-md rounded-xl shadow-lg p-8 mb-8">
-              <h3 className="text-2xl font-semibold text-white mb-4">
-                Architecture, Engineering & Construction
-              </h3>
-              <p className="text-white/80 text-lg mb-6">
-                <span className="text-red-400">
-                  Document construction progress
-                </span>
-                , capture as-built conditions, and collaborate with teams
-                remotely. 3D scans provide{" "}
-                <span className="text-red-400">accurate spatial data</span> for
-                architects and engineers,{" "}
-                <span className="text-red-400">
-                  streamlining project management
-                </span>{" "}
-                and reducing costly site visits.{" "}
-                <a href="/aec" className="underline">
-                  Learn More.
-                </a>
-              </p>
-              <div
-                className="rounded-lg overflow-hidden"
-                style={{ height: "480px" }}
-              >
-                <iframe
-                  width="100%"
-                  height="100%"
-                  src="https://my.matterport.com/show/?m=8CzZPMoH7vp"
-                  frameBorder="0"
-                  allowFullScreen
-                  allow="xr-spatial-tracking"
-                ></iframe>
-              </div>
-            </div>
-          </AnimatedSection>
+            {/* AEC */}
+            <AnimatedSection>
+              <ServiceCard
+                title="Architecture, Engineering & Construction"
+                color="#ef4444"
+                modelId="8CzZPMoH7vp"
+                link="/aec"
+                description={
+                  <p>
+                    <span className="text-red-400">
+                      Document construction progress
+                    </span>
+                    , capture as-built conditions, and collaborate with teams
+                    remotely. 3D scans provide{" "}
+                    <span className="text-red-400">accurate spatial data</span>{" "}
+                    for architects and engineers,{" "}
+                    <span className="text-red-400">
+                      streamlining project management
+                    </span>{" "}
+                    and reducing costly site visits.{" "}
+                    <a href="/aec" className="underline">
+                      See more.
+                    </a>
+                  </p>
+                }
+              />
+            </AnimatedSection>
 
-          {/* Operations/Facility Management */}
-          <AnimatedSection className="mb-16">
-            <div className="bg-white/10 backdrop-blur-md rounded-xl shadow-lg p-8 mb-8">
-              <h3 className="text-2xl font-semibold text-white mb-4">
-                Commercial & Industrial Facility Management
-              </h3>
-              <p className="text-white/80 text-lg mb-6">
-                Create <span className="text-violet-400">digital twins</span> of
-                warehouses, factories, and commercial spaces.{" "}
-                <span className="text-violet-400">Streamline maintenance</span>,
-                plan renovations, and train staff with accurate 3D models.
-                Perfect for{" "}
-                <span className="text-violet-400">facility managers</span> who
-                need detailed documentation of complex spaces.{" "}
-                <a href="/ops" className="underline">
-                  Learn More.
-                </a>
-              </p>
-              <div
-                className="rounded-lg overflow-hidden"
-                style={{ height: "480px" }}
-              >
-                <iframe
-                  width="100%"
-                  height="100%"
-                  src="https://my.matterport.com/show/?m=8CzZPMoH7vp"
-                  frameBorder="0"
-                  allowFullScreen
-                  allow="xr-spatial-tracking"
-                ></iframe>
-              </div>
-            </div>
-          </AnimatedSection>
+            {/* Operations/Facility Management */}
+            <AnimatedSection>
+              <ServiceCard
+                title="Commercial & Industrial Facility Management"
+                color="#a78bfa"
+                modelId="8CzZPMoH7vp"
+                link="/ops"
+                description={
+                  <p>
+                    Create{" "}
+                    <span className="text-violet-400">digital twins</span> of
+                    warehouses, factories, and commercial spaces.{" "}
+                    <span className="text-violet-400">
+                      Streamline maintenance
+                    </span>
+                    , plan renovations, and train staff with accurate 3D models.
+                    Perfect for{" "}
+                    <span className="text-violet-400">facility managers</span>{" "}
+                    who need detailed documentation of complex spaces.{" "}
+                    <a href="/ops" className="underline">
+                      See more.
+                    </a>
+                  </p>
+                }
+              />
+            </AnimatedSection>
+          </div>
         </div>
 
         {/* CTA Section */}
@@ -280,12 +248,19 @@ export default function Home() {
             <p className="text-xl text-white/80 mb-8">
               Contact us today for a consultation
             </p>
-            <button className="bg-white/20 backdrop-blur-md text-white border border-white/30 px-8 py-3 rounded-lg font-semibold hover:bg-white/30 transition">
+            <button
+              onClick={() => setShowContactForm(true)}
+              className="bg-white/20 backdrop-blur-md text-white border border-white/30 px-8 py-3 rounded-lg font-semibold hover:bg-white/30 transition"
+            >
               Get Started
             </button>
           </div>
         </AnimatedSection>
       </div>
+
+      {showContactForm && (
+        <ContactForm onClose={() => setShowContactForm(false)} />
+      )}
     </div>
   );
 }

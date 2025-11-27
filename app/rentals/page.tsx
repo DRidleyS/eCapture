@@ -1,10 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import AnimatedSection from "@/components/AnimatedSection";
 import TypewriterText from "@/components/TypewriterText";
 import MatterportEmbed from "@/components/MatterportEmbed";
+import ContactForm from "@/components/ContactForm";
 
 export default function Rentals() {
+  const [showContactForm, setShowContactForm] = useState(false);
   return (
     <main
       className="min-h-screen bg-black text-white"
@@ -23,7 +26,7 @@ export default function Rentals() {
               Rental Listings{" "}
               <span
                 className="text-emerald-400 inline-block"
-                style={{ minHeight: "2.4em", minWidth: "600px" }}
+                style={{ minHeight: "2.4em" }}
               >
                 <TypewriterText
                   items={[
@@ -135,15 +138,19 @@ export default function Rentals() {
             <p className="text-xl text-white/80 mb-8">
               Stand out from the competition with 3D virtual tours
             </p>
-            <a
-              href="/contact"
+            <button
+              onClick={() => setShowContactForm(true)}
               className="inline-block bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-4 px-8 rounded-lg transition-colors text-lg"
             >
               Get Started
-            </a>
+            </button>
           </div>
         </section>
       </AnimatedSection>
+
+      {showContactForm && (
+        <ContactForm onClose={() => setShowContactForm(false)} />
+      )}
     </main>
   );
 }
