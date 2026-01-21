@@ -94,7 +94,7 @@ export default function Home() {
             Our Services
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="flex flex-col items-center gap-6 md:w-full">
             {/* Real Estate */}
             <AnimatedSection>
               <ServiceCard
