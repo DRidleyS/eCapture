@@ -1,5 +1,9 @@
 // components/MatterportEmbed.js
-export default function MatterportEmbed({ modelId }) {
+interface MatterportEmbedProps {
+  modelId: string;
+}
+
+export default function MatterportEmbed({ modelId }: MatterportEmbedProps) {
   return (
     <div style={{ position: "relative", paddingTop: "56.25%" }}>
       <iframe
