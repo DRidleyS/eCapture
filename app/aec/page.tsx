@@ -85,7 +85,7 @@ export default function AEC() {
                 As-built capture of 100-year-old building for restoration
                 planning, code compliance, and preservation records.
               </p>
-              <MatterportEmbed modelId="8CzZPMoH7vp" />
+              <MatterportEmbed modelId="1mwDw6T2bEA" /> // Water damage (AEC)
             </div>
           </AnimatedSection>
 

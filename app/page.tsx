@@ -158,14 +158,14 @@ export default function Home() {
               <ServiceCard
                 title="Insurance Documentation"
                 color="#fbbf24"
-                modelId="8CzZPMoH7vp"
+                modelId="V6mB85vLEb4" // Fire damage
                 link="/insurance"
                 description={
                   <p>
                     <span className="text-amber-400">
-                      Comprehensive property documentation
+                      Comprehensive property records
                     </span>{" "}
-                    for claims and pre-loss records. Capture{" "}
+                    for claims and pre/post-loss documentation. Capture{" "}
                     <span className="text-amber-400">every detail</span> of a
                     property's condition with
                     <span className="text-amber-400">
@@ -181,13 +181,38 @@ export default function Home() {
                 }
               />
             </AnimatedSection>
-
+            {/* Operations/Facility Management */}
+            <AnimatedSection>
+              <ServiceCard
+                title="Commercial & Industrial Facility Management"
+                color="#a78bfa"
+                modelId="5Xz3ZrGKsMm" // Commercial Fac Man
+                link="/ops"
+                description={
+                  <p>
+                    Create{" "}
+                    <span className="text-violet-400">digital twins</span> of
+                    warehouses, factories, and commercial spaces.{" "}
+                    <span className="text-violet-400">
+                      Streamline maintenance
+                    </span>
+                    , plan renovations, and train staff with accurate 3D models.
+                    Perfect for{" "}
+                    <span className="text-violet-400">facility managers</span>{" "}
+                    who need detailed documentation of complex spaces.{" "}
+                    <a href="/ops" className="underline">
+                      See more.
+                    </a>
+                  </p>
+                }
+              />
+            </AnimatedSection>
             {/* AEC */}
             <AnimatedSection>
               <ServiceCard
                 title="Architecture, Engineering & Construction"
                 color="#ef4444"
-                modelId="8CzZPMoH7vp"
+                modelId="1mwDw6T2bEA" // Water damage (AEC)
                 link="/aec"
                 description={
                   <p>
@@ -203,33 +228,6 @@ export default function Home() {
                     </span>{" "}
                     and reducing costly site visits.{" "}
                     <a href="/aec" className="underline">
-                      See more.
-                    </a>
-                  </p>
-                }
-              />
-            </AnimatedSection>
-
-            {/* Operations/Facility Management */}
-            <AnimatedSection>
-              <ServiceCard
-                title="Commercial & Industrial Facility Management"
-                color="#a78bfa"
-                modelId="8CzZPMoH7vp"
-                link="/ops"
-                description={
-                  <p>
-                    Create{" "}
-                    <span className="text-violet-400">digital twins</span> of
-                    warehouses, factories, and commercial spaces.{" "}
-                    <span className="text-violet-400">
-                      Streamline maintenance
-                    </span>
-                    , plan renovations, and train staff with accurate 3D models.
-                    Perfect for{" "}
-                    <span className="text-violet-400">facility managers</span>{" "}
-                    who need detailed documentation of complex spaces.{" "}
-                    <a href="/ops" className="underline">
                       See more.
                     </a>
                   </p>

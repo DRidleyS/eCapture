@@ -83,7 +83,7 @@ export default function Insurance() {
                 Detailed 3D capture of fire damage throughout residential
                 property for accurate claim processing.
               </p>
-              <MatterportEmbed modelId="8CzZPMoH7vp" />
+              <MatterportEmbed modelId="1mwDw6T2bEA" /> // Water damage
             </div>
           </AnimatedSection>
 
@@ -97,7 +97,7 @@ export default function Insurance() {
                 Complete property scan showing roof damage, broken windows, and
                 interior water intrusion from severe weather.
               </p>
-              <MatterportEmbed modelId="8CzZPMoH7vp" />
+              <MatterportEmbed modelId="V6mB85vLEb4" /> // Fire damage
             </div>
           </AnimatedSection>
 

@@ -83,7 +83,7 @@ export default function Ops() {
                 Digital documentation of production floor for workflow analysis,
                 equipment placement, and facility upgrades.
               </p>
-              <MatterportEmbed modelId="8CzZPMoH7vp" />
+              <MatterportEmbed modelId="5Xz3ZrGKsMm" /> // Commercial Fac Man
             </div>
           </AnimatedSection>
 
