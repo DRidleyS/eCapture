@@ -1,23 +1,24 @@
 "use client";
-
-import { useState } from "react";
 import AnimatedSection from "@/components/AnimatedSection";
 import TypewriterText from "@/components/TypewriterText";
 import MatterportEmbed from "@/components/MatterportEmbed";
 import ContactForm from "@/components/ContactForm";
+import Image from "next/image";
 
 export default function Insurance() {
-  const [showContactForm, setShowContactForm] = useState(false);
   return (
-    <main
-      className="min-h-screen bg-black text-white"
-      style={{
-        backgroundImage: "url('/insurancespace.jpg')",
-        backgroundAttachment: "fixed",
-        backgroundPosition: "bottom",
-        backgroundSize: "cover",
-      }}
-    >
+    <main className="min-h-screen text-white relative">
+      <div className="fixed inset-0 -z-20">
+        <Image
+          src="/insurancespace.jpg"
+          alt="insurance background"
+          fill
+          priority
+          className="object-cover object-bottom"
+        />
+      </div>
+      <div className="fixed inset-0 -z-10 bg-black/60 md:hidden" aria-hidden />
+
       {/* Hero Section */}
       <section className="min-h-screen flex items-center justify-center px-4">
         <AnimatedSection>
@@ -142,7 +143,9 @@ export default function Insurance() {
               Fast, accurate 3D scans for insurance claims and adjusters
             </p>
             <button
-              onClick={() => setShowContactForm(true)}
+              onClick={() =>
+                window.dispatchEvent(new CustomEvent("openContactForm"))
+              }
               className="inline-block bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 px-8 rounded-lg transition-colors text-lg"
             >
               Get Started
@@ -150,10 +153,7 @@ export default function Insurance() {
           </div>
         </section>
       </AnimatedSection>
-
-      {showContactForm && (
-        <ContactForm onClose={() => setShowContactForm(false)} />
-      )}
+      <ContactForm />
     </main>
   );
 }

@@ -1,23 +1,23 @@
 "use client";
-
-import { useState } from "react";
 import AnimatedSection from "@/components/AnimatedSection";
 import TypewriterText from "@/components/TypewriterText";
 import MatterportEmbed from "@/components/MatterportEmbed";
 import ContactForm from "@/components/ContactForm";
+import Image from "next/image";
 
 export default function Ops() {
-  const [showContactForm, setShowContactForm] = useState(false);
   return (
-    <main
-      className="min-h-screen bg-black text-white"
-      style={{
-        backgroundImage: "url('/opsspace.jpg')",
-        backgroundAttachment: "fixed",
-        backgroundPosition: "bottom",
-        backgroundSize: "cover",
-      }}
-    >
+    <main className="min-h-screen text-white relative">
+      <div className="fixed inset-0 -z-20">
+        <Image
+          src="/opsspace.jpg"
+          alt="operations background"
+          fill
+          priority
+          className="object-cover object-bottom"
+        />
+      </div>
+
       {/* Hero Section */}
       <section className="min-h-screen flex items-center justify-center px-4">
         <AnimatedSection>
@@ -143,7 +143,9 @@ export default function Ops() {
               Digital twins and 3D documentation for smarter facility management
             </p>
             <button
-              onClick={() => setShowContactForm(true)}
+              onClick={() =>
+                window.dispatchEvent(new CustomEvent("openContactForm"))
+              }
               className="inline-block bg-violet-500 hover:bg-violet-600 text-white font-bold py-4 px-8 rounded-lg transition-colors text-lg"
             >
               Get Started
@@ -151,10 +153,7 @@ export default function Ops() {
           </div>
         </section>
       </AnimatedSection>
-
-      {showContactForm && (
-        <ContactForm onClose={() => setShowContactForm(false)} />
-      )}
+      <ContactForm />
     </main>
   );
 }

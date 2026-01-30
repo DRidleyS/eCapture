@@ -102,6 +102,7 @@ export default function ServiceCarousel({ items }: { items: CarouselItem[] }) {
               color={items[index].color}
               modelId={items[index].modelId}
               link={items[index].link}
+              forceLoad={true}
             />
           </AnimatedSection>
         </div>
@@ -118,6 +119,7 @@ export default function ServiceCarousel({ items }: { items: CarouselItem[] }) {
                 color={items[incomingIndex].color}
                 modelId={items[incomingIndex].modelId}
                 link={items[incomingIndex].link}
+                forceLoad={true}
               />
             </AnimatedSection>
           </div>

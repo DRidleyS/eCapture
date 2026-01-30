@@ -3,11 +3,8 @@
 import React, { useState, FormEvent } from "react";
 import emailjs from "emailjs-com";
 
-interface ContactFormProps {
-  onClose: () => void;
-}
-
-export default function ContactForm({ onClose }: ContactFormProps) {
+export default function ContactForm() {
+  const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -18,6 +15,15 @@ export default function ContactForm({ onClose }: ContactFormProps) {
   const [status, setStatus] = useState<
     "idle" | "sending" | "success" | "error"
   >("idle");
+
+  React.useEffect(() => {
+    const onOpen = () => setOpen(true);
+    window.addEventListener("openContactForm", onOpen as EventListener);
+    return () =>
+      window.removeEventListener("openContactForm", onOpen as EventListener);
+  }, []);
+
+  const close = () => setOpen(false);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -34,12 +40,12 @@ export default function ContactForm({ onClose }: ContactFormProps) {
           service: formData.service,
           message: formData.message,
         },
-        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
+        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!,
       );
 
       setStatus("success");
       setTimeout(() => {
-        onClose();
+        close();
       }, 2000);
     } catch (error) {
       console.error("Email send error:", error);
@@ -47,17 +53,19 @@ export default function ContactForm({ onClose }: ContactFormProps) {
     }
   };
 
+  if (!open) return null;
+
   return (
     <div
       className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[200] p-4"
-      onClick={onClose}
+      onClick={close}
     >
       <div
         className="bg-white/10 backdrop-blur-md rounded-xl shadow-2xl max-w-md w-full p-8 relative"
         onClick={(e) => e.stopPropagation()}
       >
         <button
-          onClick={onClose}
+          onClick={close}
           className="absolute top-4 right-4 text-white/60 hover:text-white text-2xl"
         >
           ×

@@ -1,23 +1,23 @@
 "use client";
-
-import { useState } from "react";
 import AnimatedSection from "@/components/AnimatedSection";
 import TypewriterText from "@/components/TypewriterText";
 import MatterportEmbed from "@/components/MatterportEmbed";
 import ContactForm from "@/components/ContactForm";
+import Image from "next/image";
 
 export default function Rentals() {
-  const [showContactForm, setShowContactForm] = useState(false);
   return (
-    <main
-      className="min-h-screen bg-black text-white"
-      style={{
-        backgroundImage: "url('/rentalspace.jpg')",
-        backgroundAttachment: "fixed",
-        backgroundPosition: "bottom",
-        backgroundSize: "cover",
-      }}
-    >
+    <main className="min-h-screen text-white relative">
+      <div className="fixed inset-0 -z-20">
+        <Image
+          src="/rentalspace.jpg"
+          alt="rental background"
+          fill
+          priority
+          className="object-cover object-bottom"
+        />
+      </div>
+
       {/* Hero Section */}
       <section className="min-h-screen flex items-center justify-center px-4">
         <AnimatedSection>
@@ -139,7 +139,9 @@ export default function Rentals() {
               Stand out from the competition with 3D virtual tours
             </p>
             <button
-              onClick={() => setShowContactForm(true)}
+              onClick={() =>
+                window.dispatchEvent(new CustomEvent("openContactForm"))
+              }
               className="inline-block bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-4 px-8 rounded-lg transition-colors text-lg"
             >
               Get Started
@@ -147,10 +149,7 @@ export default function Rentals() {
           </div>
         </section>
       </AnimatedSection>
-
-      {showContactForm && (
-        <ContactForm onClose={() => setShowContactForm(false)} />
-      )}
+      <ContactForm />
     </main>
   );
 }

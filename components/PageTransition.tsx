@@ -67,142 +67,78 @@ export default function PageTransition({
   return (
     <>
       {isTransitioning && (
-        <div className="fixed inset-0 z-9999 flex items-center justify-center overflow-hidden">
-          <style>
-            {`
-              @keyframes fadeInBg {
-                0% { opacity: 0; }
-                100% { opacity: 1; }
-              }
-              @keyframes fadeInStars {
-                0% { opacity: 0; }
-                100% { opacity: 1; }
-              }
-              @keyframes fadeOutAll {
-                0% { opacity: 1; }
-                100% { opacity: 0; }
-              }
-              .bg-layer {
-                animation: fadeInBg 0.3s ease-out 0.5s forwards;
-                opacity: 0;
-              }
-              .stars-layer {
-                animation: fadeInStars 0.3s ease-out forwards;
-                opacity: 0;
-              }
-              .transition-container {
-                animation: fadeOutAll 0.75s ease-out 2.75s forwards;
-              }
-            `}
-          </style>
+        <div
+          className="fixed inset-0 z-9999 flex items-center justify-center overflow-hidden"
+          aria-hidden
+        >
+          <style>{`
+            .pt-bg { opacity: 0; animation: pt-fade-in 0.35s ease-out forwards; }
+            @keyframes pt-fade-in { from { opacity: 0 } to { opacity: 1 } }
+            .pt-stars > * { will-change: transform, opacity; transition: opacity 900ms linear; opacity: 0.9 }
+            .pt-letter { stroke-dasharray: 290; stroke-dashoffset: 290; animation: pt-draw 900ms ease-out forwards; }
+            @keyframes pt-draw { to { stroke-dashoffset: 0 } }
+          `}</style>
 
-          <div className="absolute inset-0 transition-container">
-            {/* Black background - fades in at 0.5s */}
-            <div className="absolute inset-0 bg-black bg-layer" />
+          <div className="absolute inset-0 pt-bg bg-black/95" />
 
-            {/* Starry background - fades in immediately */}
-            <div className="absolute inset-0 stars-layer">
-              {[...Array(100)].map((_, i) => (
+          <div className="absolute inset-0 pt-stars" aria-hidden>
+            {[...Array(20)].map((_, i) => {
+              const size = Math.round(Math.random() * 3) + 1;
+              const left = Math.random() * 100;
+              const top = Math.random() * 100;
+              const delay = Math.random() * 800;
+              return (
                 <div
                   key={i}
-                  className="absolute bg-white rounded-full animate-pulse"
                   style={{
-                    width: Math.random() * 3 + 1 + "px",
-                    height: Math.random() * 3 + 1 + "px",
-                    left: Math.random() * 100 + "%",
-                    top: Math.random() * 100 + "%",
-                    animationDelay: Math.random() * 2 + "s",
-                    animationDuration: Math.random() * 3 + 2 + "s",
+                    position: "absolute",
+                    width: `${size}px`,
+                    height: `${size}px`,
+                    left: `${left}%`,
+                    top: `${top}%`,
+                    background: "white",
+                    borderRadius: "50%",
+                    opacity: 0.9,
+                    transform: "translateZ(0)",
+                    transitionDelay: `${delay}ms`,
                   }}
                 />
-              ))}
-            </div>
-
-            <svg
-              width="100%"
-              height="100%"
-              viewBox="0 0 100 100"
-              preserveAspectRatio="xMidYMid meet"
-              className="absolute inset-0"
-              style={{ filter: "blur(0px)" }}
-            >
-              <defs>
-                <filter
-                  id="softGlow"
-                  x="-200%"
-                  y="-200%"
-                  width="500%"
-                  height="500%"
-                  filterUnits="objectBoundingBox"
-                >
-                  <feGaussianBlur
-                    in="SourceGraphic"
-                    stdDeviation="2"
-                    result="blur1"
-                  />
-                  <feGaussianBlur
-                    in="SourceGraphic"
-                    stdDeviation="5"
-                    result="blur2"
-                  />
-                  <feGaussianBlur
-                    in="SourceGraphic"
-                    stdDeviation="10"
-                    result="blur3"
-                  />
-                  <feGaussianBlur
-                    in="SourceGraphic"
-                    stdDeviation="20"
-                    result="blur4"
-                  />
-                  <feGaussianBlur
-                    in="SourceGraphic"
-                    stdDeviation="40"
-                    result="blur5"
-                  />
-                  <feMerge>
-                    <feMergeNode in="blur5" />
-                    <feMergeNode in="blur4" />
-                    <feMergeNode in="blur3" />
-                    <feMergeNode in="blur2" />
-                    <feMergeNode in="blur1" />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
-                </filter>
-              </defs>
-              <style>
-                {`
-                @keyframes drawIn {
-                  0% { stroke-dashoffset: 280; }
-                  100% { stroke-dashoffset: 0; }
-                }
-                @keyframes neonPulse {
-                  0%, 100% { opacity: 0.9; }
-                  50% { opacity: 1; }
-                }
-                @keyframes delayedDraw {
-                  0%, 50% { stroke-dashoffset: 290; opacity: 0; }
-                  51% { opacity: 1; }
-                  100% { stroke-dashoffset: 0; opacity: 1; }
-                }
-                .e-letter {
-                  stroke-width: 6;
-                  fill: none;
-                  stroke-dasharray: 290;
-                  animation: delayedDraw 2s ease-out forwards, neonPulse 2s ease-in-out 1.5s infinite;
-                  filter: url(#softGlow);
-                  stroke-linecap: round;
-                  stroke-linejoin: round;
-                }
-              `}
-              </style>
-              <path
-                d="M 20 50 L 75 50 Q 80 30, 70 20 Q 60 10, 45 10 Q 30 10, 20 20 Q 10 30, 10 45 Q 10 60, 20 70 Q 30 80, 45 80 Q 60 80, 70 70 Q 76 62, 78 50 Q 78 54, 79 58"
-                className="e-letter"
-                style={{ stroke: routeColor }}
-              />
-            </svg>
+              );
+            })}
           </div>
+
+          <svg
+            width="100%"
+            height="100%"
+            viewBox="0 0 100 100"
+            preserveAspectRatio="xMidYMid meet"
+            className="absolute inset-0 pointer-events-none"
+            style={{ willChange: "opacity, transform" }}
+          >
+            <defs>
+              <filter
+                id="softGlow"
+                x="-50%"
+                y="-50%"
+                width="200%"
+                height="200%"
+              >
+                <feGaussianBlur in="SourceGraphic" stdDeviation="6" />
+              </filter>
+            </defs>
+            <path
+              d="M 20 50 L 75 50 Q 80 30, 70 20 Q 60 10, 45 10 Q 30 10, 20 20 Q 10 30, 10 45 Q 10 60, 20 70 Q 30 80, 45 80 Q 60 80, 70 70 Q 76 62, 78 50 Q 78 54, 79 58"
+              className="pt-letter"
+              style={{
+                stroke: routeColor,
+                fill: "none",
+                strokeWidth: 6,
+                filter: "url(#softGlow)",
+                strokeLinecap: "round",
+                strokeLinejoin: "round",
+              }}
+            />
+          </svg>
         </div>
       )}
       {children}

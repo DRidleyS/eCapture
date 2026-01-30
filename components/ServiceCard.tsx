@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import MatterportEmbed from "./MatterportEmbed";
 
 interface ServiceCardProps {
   title: string;
@@ -8,6 +9,7 @@ interface ServiceCardProps {
   color: string;
   modelId: string;
   link: string;
+  forceLoad?: boolean;
 }
 
 export default function ServiceCard({
@@ -16,9 +18,12 @@ export default function ServiceCard({
   color,
   modelId,
   link,
+  forceLoad,
 }: ServiceCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isDesktop, setIsDesktop] = React.useState(false);
+  const [loadIframe, setLoadIframe] = useState(Boolean(forceLoad));
+  const iframeRef = useRef<HTMLDivElement | null>(null);
 
   React.useEffect(() => {
     // Only run on client
@@ -38,6 +43,28 @@ export default function ServiceCard({
     if (!isDesktop && isExpanded) setIsExpanded(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isDesktop]);
+
+  useEffect(() => {
+    if (forceLoad) setLoadIframe(true);
+  }, [forceLoad]);
+
+  useEffect(() => {
+    if (loadIframe) return;
+    const el = iframeRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setLoadIframe(true);
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.25 },
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [loadIframe]);
 
   return (
     <div
@@ -66,15 +93,13 @@ export default function ServiceCard({
           <div
             className="rounded-lg overflow-hidden"
             style={{ height: "480px" }}
+            ref={iframeRef}
           >
-            <iframe
-              width="100%"
-              height="100%"
-              src={`https://my.matterport.com/show/?m=${modelId}`}
-              frameBorder="0"
-              allowFullScreen
-              allow="xr-spatial-tracking"
-            ></iframe>
+            <MatterportEmbed
+              modelId={modelId}
+              forceLoad={loadIframe}
+              prefetchMargin="800px"
+            />
           </div>
         </div>
       )}
