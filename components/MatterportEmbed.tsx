@@ -13,7 +13,7 @@ interface MatterportEmbedProps {
 export default function MatterportEmbed({
   modelId,
   forceLoad = false,
-    prefetchMargin = "800px",
+  prefetchMargin = "800px",
 }: MatterportEmbedProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [shouldPrefetch, setShouldPrefetch] = useState(false);
