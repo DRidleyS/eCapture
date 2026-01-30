@@ -24,20 +24,21 @@ export default function Ops() {
           <div className="max-w-4xl mx-auto text-center bg-white/10 backdrop-blur-md p-12 rounded-lg">
             <h1 className="text-5xl md:text-7xl font-bold mb-6">
               Commercial Operations{" "}
-              <span
-                className="text-violet-400 inline-block"
-                style={{ minHeight: "2.4em" }}
-              >
-                <TypewriterText
-                  items={[
-                    { text: "Facility Management", color: "#a78bfa" },
-                    { text: "Space Planning", color: "#a78bfa" },
-                    { text: "Asset Tracking", color: "#a78bfa" },
-                    { text: "Operational Insights", color: "#a78bfa" },
-                  ]}
-                />
-              </span>
             </h1>
+            <span
+              className="text-violet-400 inline-block text-5xl md:text-7xl font-bold mb-6"
+              style={{ minHeight: "2.4em" }}
+            >
+              <TypewriterText
+                items={[
+                  { text: "Facility Management", color: "#a78bfa" },
+                  { text: "Space Planning", color: "#a78bfa" },
+                  { text: "Asset Tracking", color: "#a78bfa" },
+                  { text: "Operational Insights", color: "#a78bfa" },
+                ]}
+              />
+            </span>
+
             <p className="text-xl md:text-2xl text-white/80 mb-8">
               Optimize commercial operations with digital twin technology.
               Manage{" "}
@@ -69,7 +70,7 @@ export default function Ops() {
                 Complete 3D scan of 200,000 sq ft warehouse for inventory
                 management, layout optimization, and safety planning.
               </p>
-              <MatterportEmbed modelId="8CzZPMoH7vp" />
+              <MatterportEmbed modelId="5Xz3ZrGKsMm" />
             </div>
           </AnimatedSection>
 
@@ -83,7 +84,7 @@ export default function Ops() {
                 Digital documentation of production floor for workflow analysis,
                 equipment placement, and facility upgrades.
               </p>
-              <MatterportEmbed modelId="5Xz3ZrGKsMm" /> // Commercial Fac Man
+              <MatterportEmbed modelId="5Xz3ZrGKsMm" />
             </div>
           </AnimatedSection>
 
@@ -97,7 +98,7 @@ export default function Ops() {
                 Multi-floor office capture for space planning, lease
                 documentation, and remote facility management.
               </p>
-              <MatterportEmbed modelId="8CzZPMoH7vp" />
+              <MatterportEmbed modelId="5Xz3ZrGKsMm" />
             </div>
           </AnimatedSection>
 
@@ -111,7 +112,7 @@ export default function Ops() {
                 Standardized 3D documentation across multiple retail locations
                 for merchandising, compliance, and training.
               </p>
-              <MatterportEmbed modelId="8CzZPMoH7vp" />
+              <MatterportEmbed modelId="5Xz3ZrGKsMm" />
             </div>
           </AnimatedSection>
 
@@ -125,7 +126,7 @@ export default function Ops() {
                 Precise as-built documentation of data center infrastructure for
                 capacity planning and maintenance operations.
               </p>
-              <MatterportEmbed modelId="8CzZPMoH7vp" />
+              <MatterportEmbed modelId="5Xz3ZrGKsMm" />
             </div>
           </AnimatedSection>
         </div>

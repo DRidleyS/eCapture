@@ -8,31 +8,44 @@ const AnimatedSection = ({
   className?: string;
 }) => {
   const [isVisible, setIsVisible] = React.useState(false);
-  const sectionRef = React.useRef<HTMLDivElement>(null);
+  const sectionRef = React.useRef<HTMLDivElement | null>(null);
+  const hideTimeoutRef = React.useRef<number | null>(null);
 
   React.useEffect(() => {
+    const ENTER_THRESHOLD = 0.2; // become visible when >= 20%
+    const EXIT_THRESHOLD = 0.05; // become hidden when <= 5%
+    const HIDE_DEBOUNCE_MS = 150; // delay before hiding to avoid flashes
+
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
+        const ratio = entry.intersectionRatio ?? 0;
+
+        if (ratio >= ENTER_THRESHOLD) {
+          if (hideTimeoutRef.current) {
+            clearTimeout(hideTimeoutRef.current);
+            hideTimeoutRef.current = null;
+          }
           setIsVisible(true);
-        } else {
-          setIsVisible(false);
+        } else if (ratio <= EXIT_THRESHOLD) {
+          if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
+          hideTimeoutRef.current = window.setTimeout(() => {
+            setIsVisible(false);
+            hideTimeoutRef.current = null;
+          }, HIDE_DEBOUNCE_MS);
         }
       },
       {
-        threshold: 0.2,
-        rootMargin: "0px 0px -100px 0px",
-      }
+        threshold: [0, EXIT_THRESHOLD, ENTER_THRESHOLD, 0.5],
+        rootMargin: "0px 0px -10% 0px",
+      },
     );
 
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
+    const el = sectionRef.current;
+    if (el) observer.observe(el);
 
     return () => {
-      if (sectionRef.current) {
-        observer.unobserve(sectionRef.current);
-      }
+      if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
+      observer.disconnect();
     };
   }, []);
 

@@ -24,20 +24,21 @@ export default function Real() {
           <div className="max-w-4xl mx-auto text-center bg-white/10 backdrop-blur-md p-12 rounded-lg">
             <h1 className="text-5xl md:text-7xl font-bold mb-6">
               Real Estate{" "}
-              <span
-                className="text-blue-400 inline-block"
-                style={{ minHeight: "2.4em" }}
-              >
-                <TypewriterText
-                  items={[
-                    { text: "Virtual Tours", color: "#60a5fa" },
-                    { text: "3D Showcases", color: "#60a5fa" },
-                    { text: "Property Previews", color: "#60a5fa" },
-                    { text: "Immersive Walkthroughs", color: "#60a5fa" },
-                  ]}
-                />
-              </span>
             </h1>
+            <span
+              className="text-blue-400 inline-block text-5xl md:text-7xl font-bold mb-6"
+              style={{ minHeight: "2.4em" }}
+            >
+              <TypewriterText
+                items={[
+                  { text: "Virtual Tours", color: "#60a5fa" },
+                  { text: "3D Showcases", color: "#60a5fa" },
+                  { text: "Property Previews", color: "#60a5fa" },
+                  { text: "Immersive Walkthroughs", color: "#60a5fa" },
+                ]}
+              />
+            </span>
+
             <p className="text-xl md:text-2xl text-white/80 mb-8">
               Transform property listings with immersive 3D experiences. Give
               buyers the power to explore homes virtually, from{" "}

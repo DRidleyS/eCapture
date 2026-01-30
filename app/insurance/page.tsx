@@ -69,7 +69,7 @@ export default function Insurance() {
                 Comprehensive documentation of basement flooding showing
                 affected areas, water lines, and structural damage.
               </p>
-              <MatterportEmbed modelId="8CzZPMoH7vp" />
+              <MatterportEmbed modelId="1mwDw6T2bEA" />
             </div>
           </AnimatedSection>
 
@@ -83,7 +83,7 @@ export default function Insurance() {
                 Detailed 3D capture of fire damage throughout residential
                 property for accurate claim processing.
               </p>
-              <MatterportEmbed modelId="1mwDw6T2bEA" /> // Water damage
+              <MatterportEmbed modelId="V6mB85vLEb4" />
             </div>
           </AnimatedSection>
 
@@ -97,7 +97,7 @@ export default function Insurance() {
                 Complete property scan showing roof damage, broken windows, and
                 interior water intrusion from severe weather.
               </p>
-              <MatterportEmbed modelId="V6mB85vLEb4" /> // Fire damage
+              <MatterportEmbed modelId="1mwDw6T2bEA" />
             </div>
           </AnimatedSection>
 
@@ -111,7 +111,7 @@ export default function Insurance() {
                 Pre and post-remediation documentation showing extent of mold
                 growth and successful treatment areas.
               </p>
-              <MatterportEmbed modelId="8CzZPMoH7vp" />
+              <MatterportEmbed modelId="1mwDw6T2bEA" />
             </div>
           </AnimatedSection>
 
@@ -125,7 +125,7 @@ export default function Insurance() {
                 Thorough documentation of foundation cracks, wall separation,
                 and compromised structural elements.
               </p>
-              <MatterportEmbed modelId="8CzZPMoH7vp" />
+              <MatterportEmbed modelId="1mwDw6T2bEA" />
             </div>
           </AnimatedSection>
         </div>
