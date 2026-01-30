@@ -49,9 +49,11 @@ export default function Home() {
                 className="font-extrabold bg-center bg-no-repeat bg-cover bg-clip-text text-transparent inline-block"
                 style={{
                   backgroundImage: "url('/spacebg.jpg')",
-                  backgroundSize: "270%",
+                  backgroundSize: "180% 180%",
                   backgroundPosition: "center",
-                  filter: "brightness(2) saturate(1.05)",
+                  WebkitTextStroke: "1.2px white",
+                  WebkitTextFillColor: "transparent",
+                  textShadow: "0 0 8px rgba(255,255,255,0.95)",
                 }}
               >
                 Space?

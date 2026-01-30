@@ -97,8 +97,8 @@ export default function ServiceCard({
           >
             <MatterportEmbed
               modelId={modelId}
-              forceLoad={loadIframe}
-              prefetchMargin="800px"
+              forceLoad={Boolean(loadIframe || forceLoad)}
+              prefetchMargin={"800px"}
             />
           </div>
         </div>
