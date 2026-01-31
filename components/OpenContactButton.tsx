@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useRouter } from "next/navigation";
 
 interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
@@ -11,11 +12,12 @@ export default function OpenContactButton({
   className,
   ...rest
 }: Props) {
+  const router = useRouter();
   return (
     <button
       {...rest}
       className={className}
-      onClick={() => window.dispatchEvent(new CustomEvent("openContactForm"))}
+      onClick={() => router.push("/contact")}
     >
       {children}
     </button>

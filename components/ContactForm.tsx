@@ -10,6 +10,10 @@ export default function ContactForm() {
     email: "",
     phone: "",
     service: "",
+    address: "",
+    squareFootage: "",
+    neededBy: "",
+    questions: "",
     message: "",
   });
   const [status, setStatus] = useState<
@@ -38,6 +42,10 @@ export default function ContactForm() {
           from_email: formData.email,
           phone: formData.phone,
           service: formData.service,
+          address: formData.address,
+          square_footage: formData.squareFootage,
+          needed_by: formData.neededBy,
+          questions: formData.questions,
           message: formData.message,
         },
         process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!,
@@ -124,6 +132,49 @@ export default function ContactForm() {
 
             <div>
               <label className="block text-white mb-2">
+                Address of building
+              </label>
+              <input
+                type="text"
+                value={formData.address}
+                onChange={(e) =>
+                  setFormData({ ...formData, address: e.target.value })
+                }
+                className="w-full px-4 py-2 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:border-white/50"
+                placeholder="123 Main St, City, State"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-white mb-2">Square footage</label>
+                <input
+                  type="number"
+                  min={0}
+                  value={formData.squareFootage}
+                  onChange={(e) =>
+                    setFormData({ ...formData, squareFootage: e.target.value })
+                  }
+                  className="w-full px-4 py-2 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:border-white/50"
+                  placeholder="e.g. 1200"
+                />
+              </div>
+
+              <div>
+                <label className="block text-white mb-2">Needed by</label>
+                <input
+                  type="date"
+                  value={formData.neededBy}
+                  onChange={(e) =>
+                    setFormData({ ...formData, neededBy: e.target.value })
+                  }
+                  className="w-full px-4 py-2 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:border-white/50"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-white mb-2">
                 Service Interested In
               </label>
               <select
@@ -152,6 +203,21 @@ export default function ContactForm() {
                   Commercial & Industrial Facility Management
                 </option>
               </select>
+            </div>
+
+            <div>
+              <label className="block text-white mb-2">
+                Questions (optional)
+              </label>
+              <textarea
+                value={formData.questions}
+                onChange={(e) =>
+                  setFormData({ ...formData, questions: e.target.value })
+                }
+                rows={3}
+                className="w-full px-4 py-2 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:border-white/50"
+                placeholder="Any specific questions for the team"
+              />
             </div>
 
             <div>
