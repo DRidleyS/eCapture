@@ -24,3 +24,14 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* viewport-height utility using --vh (kept updated by SetVh) with 100dvh fallback */
+.min-h-vh {
+  min-height: calc(var(--vh, 1vh) * 100);
+}
+
+@supports (height: 100dvh) {
+  .min-h-vh {
+    min-height: 100dvh;
+  }
+}

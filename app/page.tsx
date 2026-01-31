@@ -6,6 +6,7 @@ import ContactForm from "@/components/ContactForm";
 import ServicesSection from "@/components/ServicesSection";
 import OpenContactButton from "@/components/OpenContactButton";
 import Image from "next/image";
+import SetVh from "@/components/SetVh";
 
 export default function Home() {
   const useCases = [
@@ -17,7 +18,8 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen bg-bottom bg-no-repeat relative">
+    <div className="bg-bottom bg-no-repeat relative min-h-vh">
+      <SetVh />
       <div className="fixed inset-0 -z-10">
         <Image
           src="/spacebg.jpg"
@@ -92,6 +94,7 @@ export default function Home() {
                   src="/Elim.JPG"
                   alt="Elim with Camera"
                   fill
+                  sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 33vw"
                   className="object-cover rounded-lg"
                 />
               </div>
