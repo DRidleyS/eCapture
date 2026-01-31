@@ -340,7 +340,15 @@ export default function ContactFunnel() {
   const progress = Math.round(((stepIdx + 1) / steps.length) * 100);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[rgba(8,10,12,0.55)] p-6">
+    <div
+      className="min-h-screen flex items-center justify-center p-6"
+      style={{
+        backgroundImage:
+          "linear-gradient(rgba(8,10,12,0.55), rgba(8,10,12,0.55)), url('/spacebg.jpg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
       <div className="w-full max-w-lg bg-white/6 backdrop-blur-md border border-white/8 rounded-2xl shadow-lg p-7">
         <div className="flex items-center justify-between mb-4">
           <div>

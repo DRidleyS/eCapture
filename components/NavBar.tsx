@@ -1,41 +1,32 @@
-"use client";
-
 import React from "react";
+import NavBarClient from "@/components/NavBarClient";
 
 const AnimatedLink = ({
   href,
   children,
-  onClick,
   hoverColor,
 }: {
   href: string;
   children: string;
-  onClick?: () => void;
   hoverColor?: string;
 }) => {
-  const [isHovered, setIsHovered] = React.useState(false);
   const letters = children.split("");
 
   return (
     <a
       href={href}
-      className="text-white/80 transition-colors inline-flex overflow-hidden"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      onClick={onClick}
-      style={{
-        height: "1.2em",
-        color: isHovered && hoverColor ? hoverColor : undefined,
-      }}
+      className="group text-white/80 transition-colors inline-flex overflow-hidden hover:text-[var(--hover-color)]"
+      style={
+        hoverColor
+          ? { ["--hover-color" as any]: hoverColor, height: "1.2em" }
+          : { height: "1.2em" }
+      }
     >
       {letters.map((letter, index) => (
         <span
           key={index}
-          className="inline-flex flex-col transition-transform duration-300"
-          style={{
-            transitionDelay: isHovered ? `${index * 0.05}s` : "0s",
-            transform: isHovered ? "translateY(-125%)" : "translateY(0)",
-          }}
+          className="inline-flex flex-col transition-transform duration-300 group-hover:-translate-y-[125%]"
+          style={{ transitionDelay: `${index * 0.05}s` }}
         >
           <span className="block">{letter === " " ? "\u00A0" : letter}</span>
           <span className="block">{letter === " " ? "\u00A0" : letter}</span>
@@ -46,30 +37,18 @@ const AnimatedLink = ({
 };
 
 const NavBar = () => {
-  const [isOpen, setIsOpen] = React.useState(false);
-  const [logoHovered, setLogoHovered] = React.useState(false);
-
   return (
     <>
-      <nav className="bg-white/10 backdrop-blur-md shadow-lg">
+      <nav className="bg-white/10 backdrop-blur-md shadow-lg relative z-[100002]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
               <a
                 href="/"
-                className="text-xl font-bold text-white hover:text-blue-300 transition-all duration-300 inline-flex overflow-hidden"
-                onMouseEnter={() => setLogoHovered(true)}
-                onMouseLeave={() => setLogoHovered(false)}
+                className="group text-xl font-bold text-white hover:text-blue-300 transition-all duration-300 inline-flex overflow-hidden"
                 style={{ height: "1.5em" }}
               >
-                <div
-                  className="transition-transform duration-300"
-                  style={{
-                    transform: logoHovered
-                      ? "translateY(-100%)"
-                      : "translateY(0)",
-                  }}
-                >
+                <div className="transition-transform duration-300 group-hover:-translate-y-full">
                   <div className="block">eCapture</div>
                   <div className="block">Home</div>
                 </div>
@@ -95,105 +74,13 @@ const NavBar = () => {
               </AnimatedLink>
             </div>
 
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="md:hidden flex items-center text-white"
-            >
-              {isOpen ? (
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                </svg>
-              )}
-            </button>
+            {/* Mobile: client-only interactive piece mounts here */}
+            <div className="md:hidden">
+              <NavBarClient />
+            </div>
           </div>
         </div>
       </nav>
-
-      {/* Mobile Menu Overlay */}
-      {isOpen && (
-        <div className="md:hidden fixed inset-0 bg-white/10 backdrop-blur-md z-5000">
-          <div className="flex justify-between items-center p-4 border-b border-white/20">
-            <span className="text-xl font-bold text-white">eCapture</span>
-            <button onClick={() => setIsOpen(false)} className="text-white">
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-          </div>
-          <div className="flex flex-col items-center justify-center h-full space-y-8">
-            <a
-              href="/real"
-              className="text-2xl text-white hover:text-blue-400 transition-colors"
-              onClick={() => setIsOpen(false)}
-            >
-              Real Estate
-            </a>
-            <a
-              href="/rentals"
-              className="text-2xl text-white hover:text-emerald-400 transition-colors"
-              onClick={() => setIsOpen(false)}
-            >
-              Rental Listings
-            </a>
-            <a
-              href="/ops"
-              className="text-2xl text-white hover:text-violet-400 transition-colors"
-              onClick={() => setIsOpen(false)}
-            >
-              ComOps
-            </a>
-            <a
-              href="/insurance"
-              className="text-2xl text-white hover:text-amber-400 transition-colors"
-              onClick={() => setIsOpen(false)}
-            >
-              Insurance Work
-            </a>
-            <a
-              href="/aec"
-              className="text-2xl text-white hover:text-red-500 transition-colors"
-              onClick={() => setIsOpen(false)}
-            >
-              AEC
-            </a>
-          </div>
-        </div>
-      )}
     </>
   );
 };
