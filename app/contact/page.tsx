@@ -11,7 +11,7 @@ export default function ContactFunnel() {
     { id: "address", title: "Building address" },
     { id: "squareFootage", title: "Square footage" },
     { id: "neededBy", title: "When do you need it?" },
-    { id: "questions", title: "Questions or comments" },
+    { id: "message", title: "questions or comments" },
     { id: "review", title: "Review & Submit" },
   ];
 
@@ -28,7 +28,6 @@ export default function ContactFunnel() {
     address: "",
     squareFootage: "",
     neededBy: "",
-    questions: "",
     message: "",
   });
 
@@ -56,7 +55,6 @@ export default function ContactFunnel() {
           address: form.address,
           square_footage: form.squareFootage,
           needed_by: form.neededBy,
-          questions: form.questions,
           message: form.message,
         },
         process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!,
@@ -242,12 +240,14 @@ export default function ContactFunnel() {
         return (
           <div className="space-y-4">
             <input
-              type="number"
-              min={0}
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
               value={form.squareFootage}
-              onChange={(e) =>
-                setForm({ ...form, squareFootage: e.target.value })
-              }
+              onChange={(e) => {
+                const digits = e.target.value.replace(/\D/g, "");
+                setForm({ ...form, squareFootage: digits });
+              }}
               className={baseInput}
               placeholder="e.g. 1500"
             />
@@ -275,12 +275,12 @@ export default function ContactFunnel() {
           </div>
         );
 
-      case "questions":
+      case "message":
         return (
           <div className="space-y-4">
             <textarea
-              value={form.questions}
-              onChange={(e) => setForm({ ...form, questions: e.target.value })}
+              value={form.message}
+              onChange={(e) => setForm({ ...form, message: e.target.value })}
               rows={6}
               className={baseInput + " resize-none"}
               placeholder="Any details you want us to know..."
@@ -309,16 +309,18 @@ export default function ContactFunnel() {
                 <span className="font-medium">{form.neededBy || "—"}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-sm text-white/80">Questions</span>
-                <span className="font-medium">{form.questions || "—"}</span>
-              </div>
-              <div className="flex justify-between">
                 <span className="text-sm text-white/80">Name</span>
                 <span className="font-medium">{form.name || "—"}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-sm text-white/80">Email</span>
                 <span className="font-medium">{form.email || "—"}</span>
+              </div>
+              <div className="flex justify-between items-start">
+                <span className="text-sm text-white/80">message</span>
+                <span className="font-medium max-w-[60%] truncate text-right">
+                  {form.message || "—"}
+                </span>
               </div>
             </div>
 

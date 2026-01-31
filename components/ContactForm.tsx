@@ -13,7 +13,6 @@ export default function ContactForm() {
     address: "",
     squareFootage: "",
     neededBy: "",
-    questions: "",
     message: "",
   });
   const [status, setStatus] = useState<
@@ -45,7 +44,6 @@ export default function ContactForm() {
           address: formData.address,
           square_footage: formData.squareFootage,
           needed_by: formData.neededBy,
-          questions: formData.questions,
           message: formData.message,
         },
         process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!,
@@ -84,7 +82,7 @@ export default function ContactForm() {
         {status === "success" ? (
           <div className="text-center py-8">
             <div className="text-emerald-400 text-5xl mb-4">✓</div>
-            <p className="text-white text-xl">Message sent successfully!</p>
+            <p className="text-white text-xl">Success!</p>
             <p className="text-white/60 mt-2">We'll get back to you soon.</p>
           </div>
         ) : (
@@ -207,16 +205,16 @@ export default function ContactForm() {
 
             <div>
               <label className="block text-white mb-2">
-                Questions (optional)
+                message (optional)
               </label>
               <textarea
-                value={formData.questions}
+                value={formData.message}
                 onChange={(e) =>
-                  setFormData({ ...formData, questions: e.target.value })
+                  setFormData({ ...formData, message: e.target.value })
                 }
                 rows={3}
                 className="w-full px-4 py-2 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:border-white/50"
-                placeholder="Any specific questions for the team"
+                placeholder="Any specific message for the team"
               />
             </div>
 
