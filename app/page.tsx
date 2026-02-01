@@ -64,7 +64,7 @@ export default function Home() {
             <p className="text-xl text-white/80 mb-8">
               Contact us today for a consultation
             </p>
-            <OpenContactButton className="bg-white/20 backdrop-blur-md text-white border border-white/30 px-8 py-3 rounded-lg font-semibold hover:bg-white/30 transition">
+            <OpenContactButton className="rgb-glow px-5 py-2 rounded-lg bg-gradient-to-tr from-sky-500 to-indigo-500 text-white font-semibold cta-text shadow-md hover:brightness-105 active:scale-[0.995] transition">
               Get Started
             </OpenContactButton>
           </div>
@@ -125,7 +125,7 @@ export default function Home() {
                   <p className="text-white text-sm mb-3">
                     Ready to capture your space in stunning 3D?
                   </p>
-                  <OpenContactButton className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition">
+                  <OpenContactButton className="inline-block px-5 py-2 rounded-lg bg-gradient-to-tr from-sky-500 to-indigo-500 text-white font-medium shadow-md hover:brightness-105 active:scale-[0.995] transition">
                     Book Now
                   </OpenContactButton>
                 </div>

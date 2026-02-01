@@ -22,6 +22,7 @@ export default function PageTransition({
   const [isTransitioning, setIsTransitioning] = React.useState(false);
   const [pendingRoute, setPendingRoute] = React.useState<string | null>(null);
   const [routeColor, setRouteColor] = React.useState("#ff6b6b");
+  const [isInitialLoading, setIsInitialLoading] = React.useState(true);
 
   React.useEffect(() => {
     const handleClick = (e: MouseEvent) => {
@@ -30,12 +31,20 @@ export default function PageTransition({
 
       if (link && link.href && link.href.startsWith(window.location.origin)) {
         const url = new URL(link.href);
-        if (url.pathname !== pathname) {
+        // If clicking the home link while already on home, reload immediately
+        // and avoid playing the overlay here (initial mount already plays it).
+        if (url.pathname === pathname && pathname === "/") {
           e.preventDefault();
-          setIsTransitioning(true);
-          setPendingRoute(url.pathname);
-          setRouteColor(getRouteColor(url.pathname));
+          window.location.reload();
+          return;
         }
+
+        // Otherwise animate on link click for same-origin links. If it's the same
+        // path (not home), we'll reload after the animation; otherwise, push to new route.
+        e.preventDefault();
+        setIsTransitioning(true);
+        setPendingRoute(url.pathname);
+        setRouteColor(getRouteColor(url.pathname));
       }
     };
 
@@ -46,28 +55,53 @@ export default function PageTransition({
   React.useEffect(() => {
     if (pendingRoute) {
       const timer = setTimeout(() => {
-        router.push(pendingRoute);
+        if (pendingRoute === pathname) {
+          // If user clicked a link to the same path, force a reload.
+          window.location.reload();
+        } else {
+          router.push(pendingRoute);
+        }
         setPendingRoute(null);
       }, 2000);
 
       return () => clearTimeout(timer);
     }
-  }, [pendingRoute, router]);
+  }, [pendingRoute, router, pathname]);
 
   React.useEffect(() => {
+    // When a transition starts without a pendingRoute (initial or after
+    // navigation), hide the overlay after the full animation time.
     if (isTransitioning && !pendingRoute) {
       const timer = setTimeout(() => {
         setIsTransitioning(false);
+        // If this was the initial load, mark it complete so the page becomes visible
+        if (isInitialLoading) setIsInitialLoading(false);
       }, 3500);
 
       return () => clearTimeout(timer);
     }
-  }, [isTransitioning, pendingRoute]);
+  }, [isTransitioning, pendingRoute, isInitialLoading]);
+
+  // Start the initial loading animation on first mount. Keep `isInitialLoading`
+  // true until the first animation completes so children can render in the
+  // background while the overlay plays on top.
+  React.useEffect(() => {
+    setIsTransitioning(true);
+    setRouteColor(getRouteColor(pathname));
+    const initialTimer = setTimeout(() => {
+      // Allow the isTransitioning effect to clear the overlay and mark initial done
+      setPendingRoute(null);
+    }, 50);
+
+    return () => clearTimeout(initialTimer);
+    // run on mount only
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
       {isTransitioning && (
-        <div className="fixed inset-0 z-9999 flex items-center justify-center overflow-hidden">
+        <div className="fixed inset-0 z-[200000] flex items-center justify-center overflow-hidden">
           <style>
             {`
               @keyframes fadeInBg {
@@ -205,7 +239,13 @@ export default function PageTransition({
           </div>
         </div>
       )}
-      {children}
+      <div
+        className={
+          isInitialLoading ? "opacity-0 pointer-events-none" : "opacity-100"
+        }
+      >
+        {children}
+      </div>
     </>
   );
 }
