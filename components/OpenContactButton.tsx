@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { useRouter } from "next/navigation";
 
 interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
@@ -10,15 +9,28 @@ interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 export default function OpenContactButton({
   children,
   className,
+  onClick,
   ...rest
 }: Props) {
-  const router = useRouter();
+  const handleClick: React.MouseEventHandler<HTMLButtonElement> = (e) => {
+    try {
+      onClick?.(e as any);
+    } catch (err) {
+      // swallow handler errors to ensure transition still fires
+    }
+
+    // Dispatch a global event so PageTransition can play the overlay
+    // and then perform navigation. This avoids routing directly here
+    // which would bypass the transition overlay.
+    window.dispatchEvent(
+      new CustomEvent("startPageTransition", {
+        detail: { pathname: "/contact" },
+      }),
+    );
+  };
+
   return (
-    <button
-      {...rest}
-      className={className}
-      onClick={() => router.push("/contact")}
-    >
+    <button {...rest} className={className} onClick={handleClick}>
       {children}
     </button>
   );

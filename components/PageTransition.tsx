@@ -49,7 +49,32 @@ export default function PageTransition({
     };
 
     document.addEventListener("click", handleClick);
-    return () => document.removeEventListener("click", handleClick);
+    // listen to programmatic navigation requests (e.g., buttons)
+    const handleProgrammatic = (ev: Event) => {
+      const custom = ev as CustomEvent<{ pathname: string }>;
+      const pathnameTo = custom?.detail?.pathname;
+      if (typeof pathnameTo === "string") {
+        // if it's home->home, reload immediately
+        if (pathnameTo === pathname && pathname === "/") {
+          window.location.reload();
+          return;
+        }
+        setIsTransitioning(true);
+        setPendingRoute(pathnameTo);
+        setRouteColor(getRouteColor(pathnameTo));
+      }
+    };
+    window.addEventListener(
+      "startPageTransition",
+      handleProgrammatic as EventListener,
+    );
+    return () => {
+      document.removeEventListener("click", handleClick);
+      window.removeEventListener(
+        "startPageTransition",
+        handleProgrammatic as EventListener,
+      );
+    };
   }, [pathname]);
 
   React.useEffect(() => {
@@ -59,7 +84,9 @@ export default function PageTransition({
           // If user clicked a link to the same path, force a reload.
           window.location.reload();
         } else {
-          router.push(pendingRoute);
+          // Use a hard navigation here to ensure the transition always leads
+          // to the target page even if router.push has edge cases in this setup.
+          window.location.assign(pendingRoute);
         }
         setPendingRoute(null);
       }, 2000);

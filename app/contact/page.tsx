@@ -384,7 +384,15 @@ export default function ContactFunnel() {
         <div className="mt-6 flex items-center justify-between">
           <button
             onClick={() => {
-              if (stepIdx === 0) return router.push("/");
+              if (stepIdx === 0) {
+                // Play the page transition overlay before routing home
+                window.dispatchEvent(
+                  new CustomEvent("startPageTransition", {
+                    detail: { pathname: "/" },
+                  }),
+                );
+                return;
+              }
               back();
             }}
             className="px-4 py-2 rounded-lg bg-transparent border border-white/7 text-white/85 hover:bg-white/3 transition"

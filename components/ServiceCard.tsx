@@ -20,6 +20,23 @@ export default function ServiceCard({
   link,
   forceLoad,
 }: ServiceCardProps) {
+  // helper to convert hex color to rgba string
+  const hexToRgba = (hex: string, alpha = 1) => {
+    const clean = hex.replace("#", "");
+    const bigint = parseInt(
+      clean.length === 3
+        ? clean
+            .split("")
+            .map((c) => c + c)
+            .join("")
+        : clean,
+      16,
+    );
+    const r = (bigint >> 16) & 255;
+    const g = (bigint >> 8) & 255;
+    const b = bigint & 255;
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  };
   const [isExpanded, setIsExpanded] = useState(false);
   const [isDesktop, setIsDesktop] = React.useState(false);
   const [loadIframe, setLoadIframe] = useState(Boolean(forceLoad));
@@ -70,9 +87,13 @@ export default function ServiceCard({
     <div
       className={`rounded-xl shadow-lg overflow-hidden transition-all duration-500 ${
         isDesktop ? "w-[80vw] max-w-4xl mb-8 cursor-default" : "cursor-pointer"
-      } ${expanded ? "" : "aspect-square"}`}
+      } ${expanded ? "" : "aspect-square"} ${!expanded && !isDesktop ? "backdrop-blur-md border border-white/10" : ""}`}
       style={{
-        backgroundColor: expanded ? "rgba(255, 255, 255, 0.1)" : color,
+        background: expanded
+          ? "rgba(255, 255, 255, 0.1)"
+          : `linear-gradient(135deg, ${hexToRgba(color, 0.26)}, ${hexToRgba("#ffffff", 0.06)})`,
+        WebkitBackdropFilter: !expanded && !isDesktop ? "blur(6px)" : undefined,
+        backdropFilter: !expanded && !isDesktop ? "blur(6px)" : undefined,
       }}
       onClick={() => !isDesktop && setIsExpanded(!isExpanded)}
       onMouseEnter={() => !isDesktop && setIsExpanded(true)}
