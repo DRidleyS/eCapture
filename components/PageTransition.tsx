@@ -1,16 +1,238 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
 import React from "react";
+import { usePathname, useRouter } from "next/navigation";
 
-const getRouteColor = (route: string): string => {
-  if (route.includes("/real")) return "#60a5fa"; // blue
-  if (route.includes("/rentals")) return "#34d399"; // emerald
-  if (route.includes("/insurance")) return "#fbbf24"; // amber
-  if (route.includes("/ops")) return "#a78bfa"; // violet
-  if (route.includes("/aec")) return "#ef4444"; // red
-  return "#ff6b6b"; // default red
+type StarMode = "mobile" | "desktop";
+
+type HyperspaceParticle = {
+  dx: number;
+  dy: number;
+  hue: number;
+  depth: number;
+  baseRadius: number;
+  thickness: number;
 };
+
+function createMulberry32(seed0: number) {
+  let seed = seed0 >>> 0;
+  return () => {
+    seed += 0x6d2b79f5;
+    let t = seed;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function clamp01(n: number) {
+  return Math.max(0, Math.min(1, n));
+}
+
+function easeOutCubic(t: number) {
+  return 1 - Math.pow(1 - t, 3);
+}
+
+function HyperspaceCanvas({
+  seed,
+  durationMs,
+  mode,
+}: {
+  seed: number;
+  durationMs: number;
+  mode: StarMode;
+}) {
+  const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
+
+  React.useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const rand = createMulberry32(seed);
+    const particleCount = mode === "mobile" ? 120 : 200;
+    const particles: HyperspaceParticle[] = Array.from(
+      { length: particleCount },
+      () => {
+        const angle = rand() * Math.PI * 2;
+        return {
+          dx: Math.cos(angle),
+          dy: Math.sin(angle),
+          hue: Math.floor(rand() * 360),
+          depth: Math.pow(rand(), 2.2),
+          baseRadius: Math.pow(rand(), 0.62),
+          thickness: 0.5 + rand() * 1.6,
+        };
+      },
+    );
+
+    let raf = 0;
+    let disposed = false;
+
+    const resize = () => {
+      const dprCap = mode === "mobile" ? 1 : 2;
+      const dpr = Math.max(1, Math.min(window.devicePixelRatio || 1, dprCap));
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      canvas.width = Math.floor(w * dpr);
+      canvas.height = Math.floor(h * dpr);
+      canvas.style.width = `${w}px`;
+      canvas.style.height = `${h}px`;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+
+    resize();
+    window.addEventListener("resize", resize);
+
+    const start = performance.now();
+    const duration = Math.max(500, durationMs);
+
+    const draw = (now: number) => {
+      if (disposed) return;
+
+      const t = Math.min(1, (now - start) / duration);
+
+      // Sequence: appear -> jump -> land
+      // Slower beginning + earlier landing fade.
+      const appearEnd = 0.24;
+      const jumpEnd = 0.78;
+      const landStart = 0.8;
+      const appear = easeOutCubic(clamp01(t / appearEnd));
+      const jump = easeOutCubic(
+        clamp01((t - appearEnd) / (jumpEnd - appearEnd)),
+      );
+      const land = clamp01((t - landStart) / (1 - landStart));
+
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const cx = w / 2;
+      const cy = h / 2;
+      const maxR = Math.max(w, h) * 1.25;
+
+      ctx.clearRect(0, 0, w, h);
+      ctx.globalCompositeOperation = "lighter";
+
+      // Quick center flash to sell the jump
+      const flash = Math.max(0, (0.22 - t) / 0.22);
+      if (flash > 0) {
+        const g = ctx.createRadialGradient(
+          cx,
+          cy,
+          0,
+          cx,
+          cy,
+          Math.min(w, h) * 0.22,
+        );
+        g.addColorStop(0, `rgba(255,255,255,${0.72 * flash})`);
+        g.addColorStop(0.35, `rgba(180,220,255,${0.22 * flash})`);
+        g.addColorStop(1, "rgba(0,0,0,0)");
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, w, h);
+      }
+
+      const glowStrength = mode === "mobile" ? 0.22 : 0.55;
+      const blurBase = mode === "mobile" ? 2 : 10;
+      const blurNear = mode === "mobile" ? 6 : 18;
+
+      for (const star of particles) {
+        const near = 1 - star.depth;
+        const dx = star.dx;
+        const dy = star.dy;
+
+        // Start distributed across the screen, then accelerate outward.
+        const rBase = star.baseRadius * maxR * 0.62;
+        const speed = 0.22 + near * 1.45;
+        const rJump = maxR * jump * speed;
+        const r = rBase + (rJump - rBase) * jump;
+
+        const x = cx + dx * r;
+        const y = cy + dy * r;
+
+        const alpha = (0.1 + near * 0.95) * appear * (1 - land);
+        if (alpha <= 0.001) continue;
+
+        const trail = (6 + near * 52) * jump;
+        const x0 = x - dx * trail;
+        const y0 = y - dy * trail;
+
+        ctx.lineCap = "round";
+        ctx.lineWidth = star.thickness + near * 2.0;
+        ctx.shadowBlur = blurBase + near * blurNear;
+        ctx.shadowColor = `hsla(${star.hue}, 100%, 70%, ${glowStrength * alpha})`;
+        ctx.strokeStyle = `rgba(255,255,255,${Math.min(1, alpha + 0.12).toFixed(3)})`;
+
+        ctx.beginPath();
+        if (jump < 0.06) {
+          ctx.moveTo(x, y);
+          ctx.lineTo(x, y);
+        } else {
+          ctx.moveTo(x0, y0);
+          ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+      }
+
+      ctx.globalCompositeOperation = "source-over";
+
+      if (t < 1) raf = requestAnimationFrame(draw);
+    };
+
+    raf = requestAnimationFrame(draw);
+
+    return () => {
+      disposed = true;
+      window.removeEventListener("resize", resize);
+      cancelAnimationFrame(raf);
+    };
+  }, [seed, durationMs]);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="absolute inset-0"
+      style={{ pointerEvents: "none" }}
+      aria-hidden
+    />
+  );
+}
+
+function buildStarfieldBoxShadow(seed0: number, count: number, mode: StarMode) {
+  const rand = createMulberry32(seed0);
+  const shadows: string[] = [];
+
+  for (let i = 0; i < count; i++) {
+    const x = (rand() * 100).toFixed(2);
+    const y = (rand() * 100).toFixed(2);
+
+    if (mode === "mobile") {
+      const a = 0.78 + rand() * 0.18;
+      const bright = rand() > 0.86;
+      const blur = bright ? 1 : 0;
+      const spread = bright ? 0.25 : 0;
+      shadows.push(
+        `${x}vw ${y}vh ${blur}px ${spread}px rgba(255,255,255,${a.toFixed(2)})`,
+      );
+      continue;
+    }
+
+    const a = 0.98;
+    const bright = rand() > 0.76;
+    const hue = Math.floor(rand() * 360);
+    shadows.push(`${x}vw ${y}vh 1.6px 0.4px rgba(255,255,255,${a})`);
+    if (bright) {
+      shadows.push(`${x}vw ${y}vh 10px 3px rgba(255,255,255,0.65)`);
+      shadows.push(`${x}vw ${y}vh 22px 7px rgba(255,255,255,0.25)`);
+      shadows.push(`${x}vw ${y}vh 14px 4px hsla(${hue}, 100%, 75%, 0.22)`);
+    }
+  }
+
+  return shadows.join(", ");
+}
+
+const STARFIELD_DESKTOP = buildStarfieldBoxShadow(0xdecafbad, 140, "desktop");
+const STARFIELD_MOBILE = buildStarfieldBoxShadow(0x1234abcd, 60, "mobile");
 
 export default function PageTransition({
   children,
@@ -19,51 +241,98 @@ export default function PageTransition({
 }) {
   const pathname = usePathname();
   const router = useRouter();
+
   const [isTransitioning, setIsTransitioning] = React.useState(false);
   const [pendingRoute, setPendingRoute] = React.useState<string | null>(null);
-  const [routeColor, setRouteColor] = React.useState("#ff6b6b");
   const [isInitialLoading, setIsInitialLoading] = React.useState(true);
+  const [isMobile, setIsMobile] = React.useState(false);
+  const [reduceMotion, setReduceMotion] = React.useState(false);
+  const [transitionKey, setTransitionKey] = React.useState(0);
+
+  // Timing: slower start, faster exit.
+  const TRANSITION_TOTAL_MS = 1250;
+  const NAVIGATE_AT_MS = 780;
+  const FADE_OUT_START_MS = 860;
+  const FADE_OUT_MS = 280;
+
+  React.useEffect(() => {
+    const mqMobile = window.matchMedia("(max-width: 768px)");
+    const mqReduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    const sync = () => {
+      setIsMobile(mqMobile.matches);
+      setReduceMotion(mqReduce.matches);
+    };
+    sync();
+
+    // Safari iOS uses addListener/removeListener
+    if (mqMobile.addEventListener) mqMobile.addEventListener("change", sync);
+    else mqMobile.addListener(sync);
+
+    if (mqReduce.addEventListener) mqReduce.addEventListener("change", sync);
+    else mqReduce.addListener(sync);
+
+    return () => {
+      if (mqMobile.removeEventListener)
+        mqMobile.removeEventListener("change", sync);
+      else mqMobile.removeListener(sync);
+
+      if (mqReduce.removeEventListener)
+        mqReduce.removeEventListener("change", sync);
+      else mqReduce.removeListener(sync);
+    };
+  }, []);
+
+  const showCanvas = !reduceMotion;
+  const starsBoxShadow = showCanvas
+    ? "none"
+    : isMobile
+      ? STARFIELD_MOBILE
+      : STARFIELD_DESKTOP;
+
+  const startTransition = React.useCallback((toPathname: string | null) => {
+    setIsTransitioning(true);
+    setPendingRoute(toPathname);
+    setTransitionKey((k) => k + 1);
+  }, []);
 
   React.useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       const link = target.closest("a");
-
-      if (link && link.href && link.href.startsWith(window.location.origin)) {
-        const url = new URL(link.href);
-        // If clicking the home link while already on home, reload immediately
-        // and avoid playing the overlay here (initial mount already plays it).
-        if (url.pathname === pathname && pathname === "/") {
-          e.preventDefault();
-          window.location.reload();
-          return;
-        }
-
-        // Otherwise animate on link click for same-origin links. If it's the same
-        // path (not home), we'll reload after the animation; otherwise, push to new route.
-        e.preventDefault();
-        setIsTransitioning(true);
-        setPendingRoute(url.pathname);
-        setRouteColor(getRouteColor(url.pathname));
+      if (
+        !link ||
+        !link.href ||
+        !link.href.startsWith(window.location.origin)
+      ) {
+        return;
       }
+
+      const url = new URL(link.href);
+      if (url.pathname === pathname && pathname === "/") {
+        e.preventDefault();
+        window.location.reload();
+        return;
+      }
+
+      e.preventDefault();
+      startTransition(url.pathname);
     };
 
-    document.addEventListener("click", handleClick);
-    // listen to programmatic navigation requests (e.g., buttons)
     const handleProgrammatic = (ev: Event) => {
       const custom = ev as CustomEvent<{ pathname: string }>;
       const pathnameTo = custom?.detail?.pathname;
-      if (typeof pathnameTo === "string") {
-        // if it's home->home, reload immediately
-        if (pathnameTo === pathname && pathname === "/") {
-          window.location.reload();
-          return;
-        }
-        setIsTransitioning(true);
-        setPendingRoute(pathnameTo);
-        setRouteColor(getRouteColor(pathnameTo));
+      if (typeof pathnameTo !== "string") return;
+
+      if (pathnameTo === pathname && pathname === "/") {
+        window.location.reload();
+        return;
       }
+
+      startTransition(pathnameTo);
     };
+
+    document.addEventListener("click", handleClick);
     window.addEventListener(
       "startPageTransition",
       handleProgrammatic as EventListener,
@@ -75,60 +344,48 @@ export default function PageTransition({
         handleProgrammatic as EventListener,
       );
     };
-  }, [pathname]);
+  }, [pathname, startTransition]);
 
   React.useEffect(() => {
-    if (pendingRoute) {
-      const timer = setTimeout(() => {
-        if (pendingRoute === pathname) {
-          // If user clicked a link to the same path, force a reload.
-          window.location.reload();
-        } else {
-          // Use a hard navigation here to ensure the transition always leads
-          // to the target page even if router.push has edge cases in this setup.
-          window.location.assign(pendingRoute);
-        }
-        setPendingRoute(null);
-      }, 2000);
+    if (!isTransitioning) return;
+    const routeAtStart = pendingRoute;
 
-      return () => clearTimeout(timer);
-    }
-  }, [pendingRoute, router, pathname]);
+    const navTimer =
+      typeof routeAtStart === "string"
+        ? window.setTimeout(() => {
+            if (routeAtStart === pathname) {
+              window.location.reload();
+            } else {
+              router.push(routeAtStart);
+            }
+          }, NAVIGATE_AT_MS)
+        : undefined;
 
-  React.useEffect(() => {
-    // When a transition starts without a pendingRoute (initial or after
-    // navigation), hide the overlay after the full animation time.
-    if (isTransitioning && !pendingRoute) {
-      const timer = setTimeout(() => {
-        setIsTransitioning(false);
-        // If this was the initial load, mark it complete so the page becomes visible
-        if (isInitialLoading) setIsInitialLoading(false);
-      }, 3500);
-
-      return () => clearTimeout(timer);
-    }
-  }, [isTransitioning, pendingRoute, isInitialLoading]);
-
-  // Start the initial loading animation on first mount. Keep `isInitialLoading`
-  // true until the first animation completes so children can render in the
-  // background while the overlay plays on top.
-  React.useEffect(() => {
-    setIsTransitioning(true);
-    setRouteColor(getRouteColor(pathname));
-    const initialTimer = setTimeout(() => {
-      // Allow the isTransitioning effect to clear the overlay and mark initial done
+    const endTimer = window.setTimeout(() => {
+      setIsTransitioning(false);
       setPendingRoute(null);
-    }, 50);
+      if (isInitialLoading) setIsInitialLoading(false);
+    }, TRANSITION_TOTAL_MS);
 
-    return () => clearTimeout(initialTimer);
-    // run on mount only
+    return () => {
+      if (navTimer) window.clearTimeout(navTimer);
+      window.clearTimeout(endTimer);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [transitionKey]);
+
+  React.useEffect(() => {
+    startTransition(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <>
       {isTransitioning && (
-        <div className="fixed inset-0 z-[200000] flex items-center justify-center overflow-hidden">
+        <div
+          className="fixed inset-0 flex items-center justify-center overflow-hidden"
+          style={{ zIndex: 200000, contain: "layout paint size" }}
+        >
           <style>
             {`
               @keyframes fadeInBg {
@@ -144,128 +401,59 @@ export default function PageTransition({
                 100% { opacity: 0; }
               }
               .bg-layer {
-                animation: fadeInBg 0.3s ease-out 0.5s forwards;
                 opacity: 0;
+                animation: fadeInBg 0.26s ease-out 0.34s forwards;
+                will-change: opacity;
+              }
+              .vignette-layer {
+                pointer-events: none;
+                background: radial-gradient(circle at 50% 50%, rgba(0,0,0,0) 0%, rgba(0,0,0,0.35) 62%, rgba(0,0,0,0.94) 100%);
+                mix-blend-mode: multiply;
+                opacity: 0;
+                animation: fadeInBg 0.26s ease-out 0.34s forwards;
+                will-change: opacity;
               }
               .stars-layer {
-                animation: fadeInStars 0.3s ease-out forwards;
+                /* Stars appear over live page content first, then black fades in beneath */
+                animation: fadeInStars 0.28s ease-out 0.08s forwards;
                 opacity: 0;
+                will-change: opacity;
               }
               .transition-container {
-                animation: fadeOutAll 0.75s ease-out 2.75s forwards;
+                animation: fadeOutAll ${FADE_OUT_MS / 1000}s ease-out ${FADE_OUT_START_MS / 1000}s forwards;
+                will-change: opacity;
               }
             `}
           </style>
 
           <div className="absolute inset-0 transition-container">
-            {/* Black background - fades in at 0.5s */}
-            <div className="absolute inset-0 bg-black bg-layer" />
+            {/* Start transparent (showing current page), then fade black in */}
+            <div
+              className="absolute inset-0 bg-layer"
+              style={{ backgroundColor: "#000" }}
+            />
+            <div className="absolute inset-0 vignette-layer" />
 
-            {/* Starry background - fades in immediately */}
             <div className="absolute inset-0 stars-layer">
-              {[...Array(100)].map((_, i) => (
-                <div
-                  key={i}
-                  className="absolute bg-white rounded-full animate-pulse"
-                  style={{
-                    width: Math.random() * 3 + 1 + "px",
-                    height: Math.random() * 3 + 1 + "px",
-                    left: Math.random() * 100 + "%",
-                    top: Math.random() * 100 + "%",
-                    animationDelay: Math.random() * 2 + "s",
-                    animationDuration: Math.random() * 3 + 2 + "s",
-                  }}
+              {showCanvas && (
+                <HyperspaceCanvas
+                  seed={0xfeedc0de}
+                  durationMs={TRANSITION_TOTAL_MS}
+                  mode={isMobile ? "mobile" : "desktop"}
                 />
-              ))}
+              )}
+              {starsBoxShadow !== "none" && (
+                <div
+                  className="absolute left-0 top-0 w-px h-px bg-white"
+                  style={{ boxShadow: starsBoxShadow }}
+                  aria-hidden
+                />
+              )}
             </div>
-
-            <svg
-              width="100%"
-              height="100%"
-              viewBox="0 0 100 100"
-              preserveAspectRatio="xMidYMid meet"
-              className="absolute inset-0"
-              style={{ filter: "blur(0px)" }}
-            >
-              <defs>
-                <filter
-                  id="softGlow"
-                  x="-200%"
-                  y="-200%"
-                  width="500%"
-                  height="500%"
-                  filterUnits="objectBoundingBox"
-                >
-                  <feGaussianBlur
-                    in="SourceGraphic"
-                    stdDeviation="2"
-                    result="blur1"
-                  />
-                  <feGaussianBlur
-                    in="SourceGraphic"
-                    stdDeviation="5"
-                    result="blur2"
-                  />
-                  <feGaussianBlur
-                    in="SourceGraphic"
-                    stdDeviation="10"
-                    result="blur3"
-                  />
-                  <feGaussianBlur
-                    in="SourceGraphic"
-                    stdDeviation="20"
-                    result="blur4"
-                  />
-                  <feGaussianBlur
-                    in="SourceGraphic"
-                    stdDeviation="40"
-                    result="blur5"
-                  />
-                  <feMerge>
-                    <feMergeNode in="blur5" />
-                    <feMergeNode in="blur4" />
-                    <feMergeNode in="blur3" />
-                    <feMergeNode in="blur2" />
-                    <feMergeNode in="blur1" />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
-                </filter>
-              </defs>
-              <style>
-                {`
-                @keyframes drawIn {
-                  0% { stroke-dashoffset: 280; }
-                  100% { stroke-dashoffset: 0; }
-                }
-                @keyframes neonPulse {
-                  0%, 100% { opacity: 0.9; }
-                  50% { opacity: 1; }
-                }
-                @keyframes delayedDraw {
-                  0%, 50% { stroke-dashoffset: 290; opacity: 0; }
-                  51% { opacity: 1; }
-                  100% { stroke-dashoffset: 0; opacity: 1; }
-                }
-                .e-letter {
-                  stroke-width: 6;
-                  fill: none;
-                  stroke-dasharray: 290;
-                  animation: delayedDraw 2s ease-out forwards, neonPulse 2s ease-in-out 1.5s infinite;
-                  filter: url(#softGlow);
-                  stroke-linecap: round;
-                  stroke-linejoin: round;
-                }
-              `}
-              </style>
-              <path
-                d="M 20 50 L 75 50 Q 80 30, 70 20 Q 60 10, 45 10 Q 30 10, 20 20 Q 10 30, 10 45 Q 10 60, 20 70 Q 30 80, 45 80 Q 60 80, 70 70 Q 76 62, 78 50 Q 78 54, 79 58"
-                className="e-letter"
-                style={{ stroke: routeColor }}
-              />
-            </svg>
           </div>
         </div>
       )}
+
       <div
         className={
           isInitialLoading ? "opacity-0 pointer-events-none" : "opacity-100"

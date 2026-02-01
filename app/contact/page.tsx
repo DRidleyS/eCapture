@@ -362,7 +362,7 @@ export default function ContactFunnel() {
 
         <div className="w-full h-2 rounded-full bg-white/6 mb-6 overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-sky-400 to-indigo-500 transition-all"
+            className="h-full bg-linear-to-r from-sky-400 to-indigo-500 transition-all"
             style={{ width: `${progress}%` }}
             aria-hidden
           />
@@ -404,14 +404,14 @@ export default function ContactFunnel() {
             {stepIdx < steps.length - 1 ? (
               <button
                 onClick={next}
-                className="px-5 py-2 rounded-lg bg-gradient-to-tr from-sky-500 to-indigo-500 text-white font-medium shadow-md hover:brightness-105 active:scale-[0.995] transition"
+                className="px-5 py-2 rounded-lg bg-linear-to-tr from-sky-500 to-indigo-500 text-white font-medium shadow-md hover:brightness-105 active:scale-[0.995] transition"
               >
                 Continue
               </button>
             ) : (
               <button
                 onClick={submit}
-                className="px-5 py-2 rounded-lg bg-gradient-to-tr from-indigo-600 to-sky-500 text-white font-medium shadow-md hover:brightness-105 active:scale-[0.995] transition disabled:opacity-60"
+                className="px-5 py-2 rounded-lg bg-linear-to-tr from-indigo-600 to-sky-500 text-white font-medium shadow-md hover:brightness-105 active:scale-[0.995] transition disabled:opacity-60"
                 disabled={status === "sending"}
               >
                 {status === "sending" ? "Sending…" : "Send Request"}
