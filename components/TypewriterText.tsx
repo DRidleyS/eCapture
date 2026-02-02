@@ -24,7 +24,7 @@ export default function TypewriterText({
       ([entry]) => {
         setIsVisible(entry.isIntersecting);
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
 
     if (ref.current) {
@@ -59,7 +59,7 @@ export default function TypewriterText({
       setDisplayText(
         isDeleting
           ? currentItem.text.substring(0, displayText.length - 1)
-          : currentItem.text.substring(0, displayText.length + 1)
+          : currentItem.text.substring(0, displayText.length + 1),
       );
     }, typingSpeed);
 

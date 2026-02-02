@@ -125,7 +125,7 @@ export default function Home() {
                   <p className="text-white text-sm mb-3">
                     Ready to capture your space in stunning 3D?
                   </p>
-                  <OpenContactButton className="inline-block px-5 py-2 rounded-lg bg-linear-to-tr from-sky-500 to-indigo-500 text-white font-medium shadow-md hover:brightness-105 active:scale-[0.995] transition">
+                  <OpenContactButton className="rgb-glow inline-block px-5 py-2 rounded-lg bg-linear-to-tr from-sky-500 to-indigo-500 text-white font-semibold cta-text shadow-md hover:brightness-105 active:scale-[0.995] transition">
                     Book Now
                   </OpenContactButton>
                 </div>

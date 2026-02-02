@@ -3,6 +3,7 @@ import AnimatedSection from "@/components/AnimatedSection";
 import TypewriterText from "@/components/TypewriterText";
 import MatterportEmbed from "@/components/MatterportEmbed";
 import ContactForm from "@/components/ContactForm";
+import OpenContactButton from "@/components/OpenContactButton";
 import Image from "next/image";
 
 export default function AEC() {
@@ -143,14 +144,9 @@ export default function AEC() {
             <p className="text-xl text-white/80 mb-8">
               Professional reality capture for the built environment
             </p>
-            <button
-              onClick={() =>
-                window.dispatchEvent(new CustomEvent("openContactForm"))
-              }
-              className="inline-block bg-red-500 hover:bg-red-600 text-white font-bold py-4 px-8 rounded-lg transition-colors text-lg"
-            >
+            <OpenContactButton className="rgb-glow px-5 py-2 rounded-lg bg-linear-to-tr from-red-500 to-rose-500 text-white font-semibold cta-text shadow-md hover:brightness-105 active:scale-[0.995] transition">
               Get Started
-            </button>
+            </OpenContactButton>
           </div>
         </section>
       </AnimatedSection>

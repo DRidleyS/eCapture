@@ -3,6 +3,7 @@ import AnimatedSection from "@/components/AnimatedSection";
 import TypewriterText from "@/components/TypewriterText";
 import MatterportEmbed from "@/components/MatterportEmbed";
 import ContactForm from "@/components/ContactForm";
+import OpenContactButton from "@/components/OpenContactButton";
 import Image from "next/image";
 
 export default function Real() {
@@ -141,14 +142,9 @@ export default function Real() {
             <p className="text-xl text-white/80 mb-8">
               Let us create stunning 3D tours that sell homes faster
             </p>
-            <button
-              onClick={() =>
-                window.dispatchEvent(new CustomEvent("openContactForm"))
-              }
-              className="inline-block bg-blue-500 hover:bg-blue-600 text-white font-bold py-4 px-8 rounded-lg transition-colors text-lg"
-            >
+            <OpenContactButton className="rgb-glow px-5 py-2 rounded-lg bg-linear-to-tr from-blue-500 to-sky-500 text-white font-semibold cta-text shadow-md hover:brightness-105 active:scale-[0.995] transition">
               Get Started
-            </button>
+            </OpenContactButton>
           </div>
         </section>
       </AnimatedSection>

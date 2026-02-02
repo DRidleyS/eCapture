@@ -3,6 +3,7 @@ import AnimatedSection from "@/components/AnimatedSection";
 import TypewriterText from "@/components/TypewriterText";
 import MatterportEmbed from "@/components/MatterportEmbed";
 import ContactForm from "@/components/ContactForm";
+import OpenContactButton from "@/components/OpenContactButton";
 import Image from "next/image";
 
 export default function Ops() {
@@ -142,14 +143,9 @@ export default function Ops() {
             <p className="text-xl text-white/80 mb-8">
               Digital twins and 3D documentation for smarter facility management
             </p>
-            <button
-              onClick={() =>
-                window.dispatchEvent(new CustomEvent("openContactForm"))
-              }
-              className="inline-block bg-violet-500 hover:bg-violet-600 text-white font-bold py-4 px-8 rounded-lg transition-colors text-lg"
-            >
+            <OpenContactButton className="rgb-glow px-5 py-2 rounded-lg bg-linear-to-tr from-violet-500 to-fuchsia-500 text-white font-semibold cta-text shadow-md hover:brightness-105 active:scale-[0.995] transition">
               Get Started
-            </button>
+            </OpenContactButton>
           </div>
         </section>
       </AnimatedSection>

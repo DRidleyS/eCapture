@@ -5,17 +5,19 @@ const AnimatedLink = ({
   href,
   children,
   hoverColor,
+  className,
 }: {
   href: string;
   children: string;
   hoverColor?: string;
+  className?: string;
 }) => {
   const letters = children.split("");
 
   return (
     <a
       href={href}
-      className="group text-white/80 transition-colors inline-flex overflow-hidden hover:text-[var(--hover-color)]"
+      className={`group text-white/80 transition-colors inline-flex overflow-hidden hover:text-(--hover-color) ${className ?? ""}`}
       style={
         hoverColor
           ? { ["--hover-color" as any]: hoverColor, height: "1.2em" }
@@ -39,7 +41,7 @@ const AnimatedLink = ({
 const NavBar = () => {
   return (
     <>
-      <nav className="bg-white/10 backdrop-blur-md shadow-lg relative z-[100002]">
+      <nav className="bg-white/10 backdrop-blur-md shadow-lg relative z-100002">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
@@ -66,8 +68,19 @@ const NavBar = () => {
               <AnimatedLink href="/insurance" hoverColor="#fbbf24">
                 Insurance Work
               </AnimatedLink>
-              <AnimatedLink href="/ops" hoverColor="#a78bfa">
+              <AnimatedLink
+                href="/ops"
+                hoverColor="#a78bfa"
+                className="lg:hidden"
+              >
                 ComOps
+              </AnimatedLink>
+              <AnimatedLink
+                href="/ops"
+                hoverColor="#a78bfa"
+                className="hidden lg:inline-flex"
+              >
+                Commercial Operations
               </AnimatedLink>
               <AnimatedLink href="/aec" hoverColor="#ef4444">
                 AEC

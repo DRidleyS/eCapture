@@ -12,7 +12,7 @@ const Footer = () => {
             <a href="/" className="hover:text-gray-300 transition">
               Home
             </a>
-            <a href="/about" className="hover:text-gray-300 transition">
+            <a href="/contact" className="hover:text-gray-300 transition">
               Contact
             </a>
           </nav>

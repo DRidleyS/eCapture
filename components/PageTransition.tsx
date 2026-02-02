@@ -35,14 +35,21 @@ function easeOutCubic(t: number) {
 
 function HyperspaceCanvas({
   seed,
-  durationMs,
   mode,
+  minDurationMs,
+  landNow,
 }: {
   seed: number;
-  durationMs: number;
   mode: StarMode;
+  minDurationMs: number;
+  landNow: boolean;
 }) {
   const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
+  const landNowRef = React.useRef(landNow);
+
+  React.useEffect(() => {
+    landNowRef.current = landNow;
+  }, [landNow]);
 
   React.useEffect(() => {
     const canvas = canvasRef.current;
@@ -70,6 +77,9 @@ function HyperspaceCanvas({
 
     let raf = 0;
     let disposed = false;
+    let landStartAt: number | null = null;
+
+    const LAND_MS = 280;
 
     const resize = () => {
       const dprCap = mode === "mobile" ? 1 : 2;
@@ -87,23 +97,26 @@ function HyperspaceCanvas({
     window.addEventListener("resize", resize);
 
     const start = performance.now();
-    const duration = Math.max(500, durationMs);
+    const introDuration = Math.max(500, minDurationMs);
 
     const draw = (now: number) => {
       if (disposed) return;
 
-      const t = Math.min(1, (now - start) / duration);
+      const elapsed = now - start;
+      const tIntro = clamp01(elapsed / introDuration);
+
+      const inLanding = landNowRef.current;
+      if (inLanding && landStartAt === null) landStartAt = now;
+      const landT = landStartAt ? clamp01((now - landStartAt) / LAND_MS) : 0;
 
       // Sequence: appear -> jump -> land
       // Slower beginning + earlier landing fade.
       const appearEnd = 0.24;
       const jumpEnd = 0.78;
-      const landStart = 0.8;
-      const appear = easeOutCubic(clamp01(t / appearEnd));
+      const appear = easeOutCubic(clamp01(tIntro / appearEnd));
       const jump = easeOutCubic(
-        clamp01((t - appearEnd) / (jumpEnd - appearEnd)),
+        clamp01((tIntro - appearEnd) / (jumpEnd - appearEnd)),
       );
-      const land = clamp01((t - landStart) / (1 - landStart));
 
       const w = window.innerWidth;
       const h = window.innerHeight;
@@ -115,7 +128,7 @@ function HyperspaceCanvas({
       ctx.globalCompositeOperation = "lighter";
 
       // Quick center flash to sell the jump
-      const flash = Math.max(0, (0.22 - t) / 0.22);
+      const flash = Math.max(0, (0.22 - tIntro) / 0.22);
       if (flash > 0) {
         const g = ctx.createRadialGradient(
           cx,
@@ -136,6 +149,10 @@ function HyperspaceCanvas({
       const blurBase = mode === "mobile" ? 2 : 10;
       const blurNear = mode === "mobile" ? 6 : 18;
 
+      // If the route is slow, keep the user in "lightspeed" (no freeze).
+      const holding = !inLanding && elapsed > introDuration;
+      const holdSeconds = Math.max(0, (elapsed - introDuration) / 1000);
+
       for (const star of particles) {
         const near = 1 - star.depth;
         const dx = star.dx;
@@ -143,17 +160,22 @@ function HyperspaceCanvas({
 
         // Start distributed across the screen, then accelerate outward.
         const rBase = star.baseRadius * maxR * 0.62;
-        const speed = 0.22 + near * 1.45;
-        const rJump = maxR * jump * speed;
-        const r = rBase + (rJump - rBase) * jump;
+        const speed = 0.28 + near * 1.65;
+        const travel = holding
+          ? (holdSeconds * speed + star.baseRadius) % 1
+          : jump;
+        const r = holding
+          ? travel * maxR
+          : rBase + (maxR * travel - rBase) * jump;
 
         const x = cx + dx * r;
         const y = cy + dy * r;
 
-        const alpha = (0.1 + near * 0.95) * appear * (1 - land);
+        const alpha = (0.1 + near * 0.95) * appear * (1 - landT);
         if (alpha <= 0.001) continue;
 
-        const trail = (6 + near * 52) * jump;
+        const trailBase = holding ? 0.95 : jump;
+        const trail = (6 + near * 52) * trailBase * (1 - 0.55 * landT);
         const x0 = x - dx * trail;
         const y0 = y - dy * trail;
 
@@ -164,7 +186,7 @@ function HyperspaceCanvas({
         ctx.strokeStyle = `rgba(255,255,255,${Math.min(1, alpha + 0.12).toFixed(3)})`;
 
         ctx.beginPath();
-        if (jump < 0.06) {
+        if (!holding && jump < 0.06) {
           ctx.moveTo(x, y);
           ctx.lineTo(x, y);
         } else {
@@ -176,7 +198,7 @@ function HyperspaceCanvas({
 
       ctx.globalCompositeOperation = "source-over";
 
-      if (t < 1) raf = requestAnimationFrame(draw);
+      if (!inLanding || landT < 1) raf = requestAnimationFrame(draw);
     };
 
     raf = requestAnimationFrame(draw);
@@ -186,7 +208,7 @@ function HyperspaceCanvas({
       window.removeEventListener("resize", resize);
       cancelAnimationFrame(raf);
     };
-  }, [seed, durationMs]);
+  }, [seed, minDurationMs, mode]);
 
   return (
     <canvas
@@ -243,17 +265,19 @@ export default function PageTransition({
   const router = useRouter();
 
   const [isTransitioning, setIsTransitioning] = React.useState(false);
+  const [isExiting, setIsExiting] = React.useState(false);
   const [pendingRoute, setPendingRoute] = React.useState<string | null>(null);
   const [isInitialLoading, setIsInitialLoading] = React.useState(true);
   const [isMobile, setIsMobile] = React.useState(false);
   const [reduceMotion, setReduceMotion] = React.useState(false);
   const [transitionKey, setTransitionKey] = React.useState(0);
+  const [minDone, setMinDone] = React.useState(false);
 
-  // Timing: slower start, faster exit.
-  const TRANSITION_TOTAL_MS = 1250;
+  // Minimum timing (never shorter than this), but can extend while the next page loads.
+  const MIN_TRANSITION_MS = 1250;
   const NAVIGATE_AT_MS = 780;
-  const FADE_OUT_START_MS = 860;
   const FADE_OUT_MS = 280;
+  const MAX_HOLD_MS = 12000;
 
   React.useEffect(() => {
     const mqMobile = window.matchMedia("(max-width: 768px)");
@@ -292,8 +316,14 @@ export default function PageTransition({
 
   const startTransition = React.useCallback((toPathname: string | null) => {
     setIsTransitioning(true);
+    setIsExiting(false);
+    setMinDone(false);
     setPendingRoute(toPathname);
     setTransitionKey((k) => k + 1);
+  }, []);
+
+  const startExit = React.useCallback(() => {
+    setIsExiting(true);
   }, []);
 
   React.useEffect(() => {
@@ -350,6 +380,10 @@ export default function PageTransition({
     if (!isTransitioning) return;
     const routeAtStart = pendingRoute;
 
+    const minTimer = window.setTimeout(() => {
+      setMinDone(true);
+    }, MIN_TRANSITION_MS);
+
     const navTimer =
       typeof routeAtStart === "string"
         ? window.setTimeout(() => {
@@ -361,18 +395,41 @@ export default function PageTransition({
           }, NAVIGATE_AT_MS)
         : undefined;
 
-    const endTimer = window.setTimeout(() => {
-      setIsTransitioning(false);
-      setPendingRoute(null);
-      if (isInitialLoading) setIsInitialLoading(false);
-    }, TRANSITION_TOTAL_MS);
+    const hardCapTimer = window.setTimeout(() => {
+      startExit();
+    }, MIN_TRANSITION_MS + MAX_HOLD_MS);
 
     return () => {
+      window.clearTimeout(minTimer);
       if (navTimer) window.clearTimeout(navTimer);
-      window.clearTimeout(endTimer);
+      window.clearTimeout(hardCapTimer);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [transitionKey]);
+
+  React.useEffect(() => {
+    if (!isTransitioning || !minDone || isExiting) return;
+
+    // Initial load (no route to wait for): exit as soon as minimum elapsed.
+    if (pendingRoute === null) {
+      startExit();
+      return;
+    }
+
+    // Route transitions: only exit once the new route has finished loading/rendering.
+    if (pathname === pendingRoute) startExit();
+  }, [isTransitioning, minDone, isExiting, pendingRoute, pathname, startExit]);
+
+  React.useEffect(() => {
+    if (!isTransitioning || !isExiting) return;
+    const endTimer = window.setTimeout(() => {
+      setIsTransitioning(false);
+      setIsExiting(false);
+      setPendingRoute(null);
+      if (isInitialLoading) setIsInitialLoading(false);
+    }, FADE_OUT_MS);
+    return () => window.clearTimeout(endTimer);
+  }, [isTransitioning, isExiting, FADE_OUT_MS, isInitialLoading]);
 
   React.useEffect(() => {
     startTransition(null);
@@ -396,10 +453,6 @@ export default function PageTransition({
                 0% { opacity: 0; }
                 100% { opacity: 1; }
               }
-              @keyframes fadeOutAll {
-                0% { opacity: 1; }
-                100% { opacity: 0; }
-              }
               .bg-layer {
                 opacity: 0;
                 animation: fadeInBg 0.26s ease-out 0.34s forwards;
@@ -420,13 +473,19 @@ export default function PageTransition({
                 will-change: opacity;
               }
               .transition-container {
-                animation: fadeOutAll ${FADE_OUT_MS / 1000}s ease-out ${FADE_OUT_START_MS / 1000}s forwards;
                 will-change: opacity;
+                opacity: 1;
+                transition: opacity ${FADE_OUT_MS}ms ease-out;
+              }
+              .transition-container.exiting {
+                opacity: 0;
               }
             `}
           </style>
 
-          <div className="absolute inset-0 transition-container">
+          <div
+            className={`absolute inset-0 transition-container${isExiting ? " exiting" : ""}`}
+          >
             {/* Start transparent (showing current page), then fade black in */}
             <div
               className="absolute inset-0 bg-layer"
@@ -438,8 +497,9 @@ export default function PageTransition({
               {showCanvas && (
                 <HyperspaceCanvas
                   seed={0xfeedc0de}
-                  durationMs={TRANSITION_TOTAL_MS}
                   mode={isMobile ? "mobile" : "desktop"}
+                  minDurationMs={MIN_TRANSITION_MS}
+                  landNow={isExiting}
                 />
               )}
               {starsBoxShadow !== "none" && (
