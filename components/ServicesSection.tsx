@@ -36,8 +36,8 @@ export default function ServicesSection() {
           <span className="text-emerald-400">Transform rental listings</span>{" "}
           with interactive 3D tours that blow static photos out of the water.{" "}
           <span className="text-emerald-400">Reduce unnecessary showings</span>,
-          attract quality tenants, and let prospects explore properties
-          <span className="text-emerald-400"> 24/7 from anywhere</span>.{" "}
+          attract quality tenants, and let prospects explore properties{" "}
+          <span className="text-emerald-400">24/7 from anywhere</span>.{" "}
           <a href="/rentals" className="underline">
             See more.
           </a>
@@ -52,11 +52,11 @@ export default function ServicesSection() {
       description: (
         <p>
           <span className="text-amber-400">Comprehensive property records</span>
-          for claims and pre/post-loss documentation. Capture
-          <span className="text-amber-400"> every detail</span> of a property's
+          for claims and pre/post-loss documentation. Capture{" "}
+          <span className="text-amber-400">every detail</span> of a property's
           condition with{" "}
           <span className="text-amber-400">timestamped 3D scans</span>.
-          Essential for insurance adjusters, homeowners, and property managers.
+          Essential for insurance adjusters, homeowners, and property managers.{" "}
           <a href="/insurance" className="underline">
             See more.
           </a>
@@ -73,8 +73,8 @@ export default function ServicesSection() {
           Create <span className="text-violet-400">digital twins</span> of
           warehouses, factories, and commercial spaces.{" "}
           <span className="text-violet-400">Streamline maintenance</span>, plan
-          renovations, and train staff with accurate 3D models. Perfect for
-          <span className="text-violet-400"> facility managers</span> who need
+          renovations, and train staff with accurate 3D models. Perfect for{" "}
+          <span className="text-violet-400">facility managers</span> who need
           detailed documentation of complex spaces.{" "}
           <a href="/ops" className="underline">
             See more.
@@ -97,7 +97,7 @@ export default function ServicesSection() {
           <span className="text-red-400">
             streamlining project management
           </span>{" "}
-          and reducing costly site visits.
+          and reducing costly site visits.{" "}
           <a href="/aec" className="underline">
             See more.
           </a>
