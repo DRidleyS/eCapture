@@ -143,7 +143,7 @@ export default function Ops() {
             <p className="text-xl text-white/80 mb-8">
               Digital twins and 3D documentation for smarter facility management
             </p>
-            <OpenContactButton className="rgb-glow px-5 py-2 rounded-lg bg-linear-to-tr from-violet-500 to-fuchsia-500 text-white font-semibold cta-text shadow-md hover:brightness-105 active:scale-[0.995] transition">
+            <OpenContactButton className="rgb-glow px-5 py-2 rounded-lg bg-linear-to-tr from-violet-500 to-fuchsia-500 text-white font-semibold cta-text shadow-md hover:brightness-105 transition">
               Get Started
             </OpenContactButton>
           </div>

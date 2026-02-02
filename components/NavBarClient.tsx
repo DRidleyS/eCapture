@@ -57,10 +57,10 @@ export default function NavBarClient() {
   }, [isOpen]);
 
   const menu = (
-    <div className="fixed inset-0 z-[100001]">
+    <div className="fixed inset-0 z-100001">
       {/* Frosted glass overlay */}
       <div
-        className="absolute inset-0 bg-white/10 backdrop-blur-xl backdrop-saturate-150 z-[100000]"
+        className="absolute inset-0 bg-white/10 backdrop-blur-xl backdrop-saturate-150 z-100000"
         onClick={() => setIsOpen(false)}
         aria-hidden="true"
         style={{ WebkitBackdropFilter: "blur(18px) saturate(150%)" }}
@@ -71,13 +71,13 @@ export default function NavBarClient() {
         ref={menuRef}
         role="dialog"
         aria-modal="true"
-        className="md:hidden absolute inset-0 z-[100001]"
+        className="md:hidden absolute inset-0 z-100001"
       >
         <div className="flex justify-between items-center p-4 border-b border-white/20">
           <span className="text-xl font-bold text-white">eCapture</span>
           <button
             onClick={() => setIsOpen(false)}
-            className="text-white"
+            className="cta-interactive text-white"
             aria-label="Close menu"
           >
             <svg
@@ -142,7 +142,7 @@ export default function NavBarClient() {
       <button
         ref={triggerRef}
         onClick={() => setIsOpen(!isOpen)}
-        className="md:hidden flex items-center text-white mt-[15px]"
+        className="cta-interactive md:hidden flex items-center text-white mt-[15px]"
         aria-expanded={isOpen}
         aria-controls="mobile-menu"
         aria-label="Open menu"

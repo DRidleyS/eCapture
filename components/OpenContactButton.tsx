@@ -30,7 +30,11 @@ export default function OpenContactButton({
   };
 
   return (
-    <button {...rest} className={className} onClick={handleClick}>
+    <button
+      {...rest}
+      className={`cta-interactive ${className ?? ""}`}
+      onClick={handleClick}
+    >
       {children}
     </button>
   );

@@ -63,8 +63,9 @@ export default function ContactForm() {
 
   return (
     <div
-      className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-[200] p-4"
+      className="fixed inset-0 backdrop-blur-sm flex items-center justify-center p-4"
       style={{
+        zIndex: 200,
         backgroundImage: "url('/spacebg.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "center",
@@ -77,7 +78,7 @@ export default function ContactForm() {
       >
         <button
           onClick={close}
-          className="absolute top-4 right-4 text-white/60 hover:text-white text-2xl"
+          className="cta-interactive absolute top-4 right-4 text-white/60 hover:text-white text-2xl"
         >
           ×
         </button>
@@ -245,7 +246,7 @@ export default function ContactForm() {
             <button
               type="submit"
               disabled={status === "sending"}
-              className="w-full bg-white/20 backdrop-blur-md text-white border border-white/30 px-8 py-3 rounded-lg font-semibold hover:bg-white/30 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="cta-interactive w-full bg-white/20 backdrop-blur-md text-white border border-white/30 px-8 py-3 rounded-lg font-semibold hover:bg-white/30 transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {status === "sending" ? "Sending..." : "Send Message"}
             </button>

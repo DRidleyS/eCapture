@@ -139,7 +139,7 @@ export default function Rentals() {
             <p className="text-xl text-white/80 mb-8">
               Stand out from the competition with 3D virtual tours
             </p>
-            <OpenContactButton className="rgb-glow px-5 py-2 rounded-lg bg-linear-to-tr from-emerald-500 to-teal-500 text-white font-semibold cta-text shadow-md hover:brightness-105 active:scale-[0.995] transition">
+            <OpenContactButton className="rgb-glow px-5 py-2 rounded-lg bg-linear-to-tr from-emerald-500 to-teal-500 text-white font-semibold cta-text shadow-md hover:brightness-105 transition">
               Get Started
             </OpenContactButton>
           </div>

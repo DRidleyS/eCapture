@@ -117,7 +117,7 @@ export default function MatterportEmbed({
           <div className="text-center">
             <div className="mb-3">Preview unavailable</div>
             <button
-              className="bg-amber-500 hover:bg-amber-600 text-white py-2 px-4 rounded"
+              className="cta-interactive bg-amber-500 hover:bg-amber-600 text-white py-2 px-4 rounded"
               onClick={() => setShouldLoad(true)}
             >
               Load Tour

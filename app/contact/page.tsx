@@ -112,7 +112,7 @@ export default function ContactFunnel() {
         <button
           type="button"
           onClick={() => setOpen((s) => !s)}
-          className="w-full text-left px-4 py-3 rounded-xl bg-white/5 border border-white/8 text-white flex items-center justify-between"
+          className="cta-interactive w-full text-left px-4 py-3 rounded-xl bg-white/5 border border-white/8 text-white flex items-center justify-between"
           aria-haspopup
           aria-expanded={open}
         >
@@ -153,7 +153,7 @@ export default function ContactFunnel() {
                   onChange(o.value);
                   setOpen(false);
                 }}
-                className="w-full text-left px-4 py-3 hover:bg-white/8 text-white"
+                className="cta-interactive w-full text-left px-4 py-3 hover:bg-white/8 text-white"
               >
                 {o.label}
               </button>
@@ -395,7 +395,7 @@ export default function ContactFunnel() {
               }
               back();
             }}
-            className="px-4 py-2 rounded-lg bg-transparent border border-white/7 text-white/85 hover:bg-white/3 transition"
+            className="cta-interactive px-4 py-2 rounded-lg bg-transparent border border-white/7 text-white/85 hover:bg-white/3 transition"
           >
             {stepIdx === 0 ? "Cancel" : "Back"}
           </button>
@@ -404,14 +404,14 @@ export default function ContactFunnel() {
             {stepIdx < steps.length - 1 ? (
               <button
                 onClick={next}
-                className="px-5 py-2 rounded-lg bg-linear-to-tr from-sky-500 to-indigo-500 text-white font-medium shadow-md hover:brightness-105 active:scale-[0.995] transition"
+                className="cta-interactive px-5 py-2 rounded-lg bg-linear-to-tr from-sky-500 to-indigo-500 text-white font-medium shadow-md hover:brightness-105 transition"
               >
                 Continue
               </button>
             ) : (
               <button
                 onClick={submit}
-                className="px-5 py-2 rounded-lg bg-linear-to-tr from-indigo-600 to-sky-500 text-white font-medium shadow-md hover:brightness-105 active:scale-[0.995] transition disabled:opacity-60"
+                className="cta-interactive px-5 py-2 rounded-lg bg-linear-to-tr from-indigo-600 to-sky-500 text-white font-medium shadow-md hover:brightness-105 transition disabled:opacity-60"
                 disabled={status === "sending"}
               >
                 {status === "sending" ? "Sending…" : "Send Request"}

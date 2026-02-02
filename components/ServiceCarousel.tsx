@@ -69,7 +69,7 @@ export default function ServiceCarousel({ items }: { items: CarouselItem[] }) {
       <button
         onClick={prev}
         aria-label="Previous service"
-        className="hidden lg:flex items-center justify-center absolute left-0 z-20 ml-4 w-10 h-10 rounded-full bg-white/10 text-white hover:bg-white/20"
+        className="cta-interactive hidden lg:flex items-center justify-center absolute left-0 z-20 ml-4 w-10 h-10 rounded-full bg-white/10 text-white hover:bg-white/20"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -129,7 +129,7 @@ export default function ServiceCarousel({ items }: { items: CarouselItem[] }) {
       <button
         onClick={next}
         aria-label="Next service"
-        className="hidden lg:flex items-center justify-center absolute right-0 z-20 mr-4 w-10 h-10 rounded-full bg-white/10 text-white hover:bg-white/20"
+        className="cta-interactive hidden lg:flex items-center justify-center absolute right-0 z-20 mr-4 w-10 h-10 rounded-full bg-white/10 text-white hover:bg-white/20"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -149,7 +149,7 @@ export default function ServiceCarousel({ items }: { items: CarouselItem[] }) {
             key={i}
             onClick={() => changeIndex(i)}
             aria-label={`Go to slide ${i + 1}`}
-            className={`w-2 h-2 rounded-full ${i === index ? "bg-white" : "bg-white/30"}`}
+            className={`cta-interactive w-2 h-2 rounded-full ${i === index ? "bg-white" : "bg-white/30"}`}
           />
         ))}
       </div>

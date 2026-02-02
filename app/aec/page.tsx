@@ -144,7 +144,7 @@ export default function AEC() {
             <p className="text-xl text-white/80 mb-8">
               Professional reality capture for the built environment
             </p>
-            <OpenContactButton className="rgb-glow px-5 py-2 rounded-lg bg-linear-to-tr from-red-500 to-rose-500 text-white font-semibold cta-text shadow-md hover:brightness-105 active:scale-[0.995] transition">
+            <OpenContactButton className="rgb-glow px-5 py-2 rounded-lg bg-linear-to-tr from-red-500 to-rose-500 text-white font-semibold cta-text shadow-md hover:brightness-105 transition">
               Get Started
             </OpenContactButton>
           </div>

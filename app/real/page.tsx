@@ -142,7 +142,7 @@ export default function Real() {
             <p className="text-xl text-white/80 mb-8">
               Let us create stunning 3D tours that sell homes faster
             </p>
-            <OpenContactButton className="rgb-glow px-5 py-2 rounded-lg bg-linear-to-tr from-blue-500 to-sky-500 text-white font-semibold cta-text shadow-md hover:brightness-105 active:scale-[0.995] transition">
+            <OpenContactButton className="rgb-glow px-5 py-2 rounded-lg bg-linear-to-tr from-blue-500 to-sky-500 text-white font-semibold cta-text shadow-md hover:brightness-105 transition">
               Get Started
             </OpenContactButton>
           </div>

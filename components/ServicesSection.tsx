@@ -20,7 +20,7 @@ export default function ServicesSection() {
           <span className="text-blue-400">increase engagement</span> and help
           properties <span className="text-blue-400">stand out</span> in the
           famously competitive LA market.{" "}
-          <a href="/real" className="underline">
+          <a href="/real" className="underline cta-interactive inline-block">
             See more.
           </a>
         </p>
@@ -38,7 +38,7 @@ export default function ServicesSection() {
           <span className="text-emerald-400">Reduce unnecessary showings</span>,
           attract quality tenants, and let prospects explore properties{" "}
           <span className="text-emerald-400">24/7 from anywhere</span>.{" "}
-          <a href="/rentals" className="underline">
+          <a href="/rentals" className="underline cta-interactive inline-block">
             See more.
           </a>
         </p>
@@ -57,7 +57,10 @@ export default function ServicesSection() {
           condition with{" "}
           <span className="text-amber-400">timestamped 3D scans</span>.
           Essential for insurance adjusters, homeowners, and property managers.{" "}
-          <a href="/insurance" className="underline">
+          <a
+            href="/insurance"
+            className="underline cta-interactive inline-block"
+          >
             See more.
           </a>
         </p>
@@ -76,7 +79,7 @@ export default function ServicesSection() {
           renovations, and train staff with accurate 3D models. Perfect for{" "}
           <span className="text-violet-400">facility managers</span> who need
           detailed documentation of complex spaces.{" "}
-          <a href="/ops" className="underline">
+          <a href="/ops" className="underline cta-interactive inline-block">
             See more.
           </a>
         </p>
@@ -98,7 +101,7 @@ export default function ServicesSection() {
             streamlining project management
           </span>{" "}
           and reducing costly site visits.{" "}
-          <a href="/aec" className="underline">
+          <a href="/aec" className="underline cta-interactive inline-block">
             See more.
           </a>
         </p>

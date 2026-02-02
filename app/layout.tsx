@@ -5,6 +5,7 @@ import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import PageTransition from "@/components/PageTransition";
 import SetVh from "@/components/SetVh";
+import CtaInteractions from "@/components/CtaInteractions";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,6 +34,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <SetVh />
+        <CtaInteractions />
         <PageTransition>
           <NavBar />
           {children}
